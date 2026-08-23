@@ -1,0 +1,10 @@
+# Local tools
+ffmpeg.exe
+
+# Original / intermediate videos
+assets/video/background.mp4
+assets/video/background-small.mp4
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08080c">
+  <meta name="description" content="GeraStore. IPA Repository for GBox.">
+  <title>GeraStore | IPA Repository for GBox</title>
+  <link rel="icon" href="assets/images/gerastore-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/gerastore.css">
+</head>
+<body>
+  <div class="ambient ambient-pink"></div>
+  <div class="ambient ambient-cyan"></div>
+  <div class="grain"></div>
+
+  <header class="topbar" id="topbar">
+    <a class="brand glass-chip" href="#top" aria-label="GeraStore">
+      <img src="assets/images/gerastore-mark.svg" alt="">
+      <span>GeraStore</span>
+    </a>
+
+    <nav class="nav glass-panel" aria-label="Основная навигация">
+      <a href="#catalog">Каталог</a>
+      <a href="#advantages">Возможности</a>
+      <a href="#install">Как установить</a>
+      <a href="#updates">Обновления</a>
+    </nav>
+
+    <a class="nav-action liquid-button" href="https://github.com/gkuhtov/GeraStore" target="_blank" rel="noopener">
+      GitHub <span>↗</span>
+    </a>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-media glass-surface">
+        <div class="hero-poster" aria-hidden="true">
+          <div class="poster-orb poster-orb-one"></div>
+          <div class="poster-orb poster-orb-two"></div>
+          <div class="poster-grid"></div>
+          <div class="poster-phone">
+            <div class="phone-glass">
+              <div class="phone-island"></div>
+              <div class="phone-screen">
+                <img src="assets/images/gerastore-mark.svg" alt="">
+                <span>GeraStore</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <video id="heroVideo" class="hero-video" muted autoplay loop playsinline preload="metadata" poster="assets/images/hero-poster.svg">
+          <source src="assets/video/background-web.mp4" type="video/mp4">
+        </video>
+        <div class="hero-media-shade"></div>
+        <div class="connection-badge glass-chip" id="mediaStatus">Загрузка визуала</div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="eyebrow glass-chip">IPA Repository for GBox</div>
+        <h1>Gera<span>Store</span></h1>
+        <p>Приложения для iPhone. В одном месте. Без лишнего.</p>
+        <div class="hero-actions">
+          <a class="liquid-button liquid-button-primary" href="#catalog">Открыть каталог</a>
+          <a class="glass-button" href="#install">Как это работает</a>
+        </div>
+      </div>
+
+      <div class="hero-float glass-panel">
+        <div class="mini-icon">IPA</div>
+        <div>
+          <strong>GBox ready</strong>
+          <span>Репозиторий подключается напрямую</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro section-shell">
+      <div class="section-kicker">GeraStore</div>
+      <div class="intro-grid">
+        <h2>Каталог IPA, который выглядит как продукт.</h2>
+        <div class="intro-copy">
+          <p>GeraStore объединяет приложения, версии и информацию о сборках в одном каталоге.</p>
+          <p>Сайт получает данные из репозитория и показывает их без необходимости вручную переписывать карточки.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats section-shell">
+      <div class="stat glass-panel"><strong data-stat="apps">0</strong><span>приложений</span></div>
+      <div class="stat glass-panel"><strong data-stat="categories">0</strong><span>категорий</span></div>
+      <div class="stat glass-panel"><strong data-stat="versions">0</strong><span>версий</span></div>
+      <div class="stat glass-panel"><strong>GBox</strong><span>совместимость</span></div>
+    </section>
+
+    <section class="features section-shell" id="advantages">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Почему GeraStore</div>
+          <h2>Все нужное под стеклом.</h2>
+        </div>
+        <p>Liquid Glass интерфейс, быстрый каталог и данные из самого репозитория.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card glass-panel">
+          <span class="feature-number">01</span>
+          <h3>Большой каталог</h3>
+          <p>Приложения собраны в одном месте и распределены по категориям.</p>
+        </article>
+        <article class="feature-card glass-panel">
+          <span class="feature-number">02</span>
+          <h3>GBox</h3>
+          <p>Репозиторий рассчитан на добавление в GBox и работу с IPA.</p>
+        </article>
+        <article class="feature-card glass-panel">
+          <span class="feature-number">03</span>
+          <h3>Актуальные данные</h3>
+          <p>Версия, размер, Bundle ID и другие параметры можно брать из данных приложения.</p>
+        </article>
+        <article class="feature-card glass-panel">
+          <span class="feature-number">04</span>
+          <h3>Быстрый поиск</h3>
+          <p>Найди приложение по названию, Bundle ID или описанию.</p>
+        </article>
+        <article class="feature-card glass-panel">
+          <span class="feature-number">05</span>
+          <h3>Адаптивность</h3>
+          <p>Интерфейс рассчитан на компьютер, планшет и iPhone.</p>
+        </article>
+        <article class="feature-card glass-panel">
+          <span class="feature-number">06</span>
+          <h3>Без тяжелого видео</h3>
+          <p>Если видео не загрузилось или соединение слабое, сайт использует статичный фон.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="catalog section-shell" id="catalog">
+      <div class="section-heading catalog-heading">
+        <div>
+          <div class="section-kicker">Каталог</div>
+          <h2>Найди приложение.</h2>
+        </div>
+        <div class="search-wrap glass-panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"/></svg>
+          <input id="appSearch" type="search" placeholder="Название, Bundle ID..." autocomplete="off">
+        </div>
+      </div>
+
+      <div class="filter-row" id="categoryFilters"></div>
+      <div class="app-grid" id="appGrid">
+        <div class="loading-card glass-panel">Загружаем каталог...</div>
+      </div>
+    </section>
+
+    <section class="install section-shell" id="install">
+      <div class="install-card glass-surface">
+        <div class="install-glow"></div>
+        <div class="section-kicker">Как установить</div>
+        <h2>Четыре шага до приложения.</h2>
+        <div class="steps">
+          <div class="step"><b>01</b><span>Открой GBox.</span></div>
+          <div class="step"><b>02</b><span>Добавь репозиторий GeraStore.</span></div>
+          <div class="step"><b>03</b><span>Выбери нужное приложение.</span></div>
+          <div class="step"><b>04</b><span>Установи IPA.</span></div>
+        </div>
+        <div class="install-actions">
+          <button class="liquid-button liquid-button-primary" id="copyRepo">Скопировать репозиторий</button>
+          <a class="glass-button" href="https://github.com/gkuhtov/GeraStore" target="_blank" rel="noopener">Открыть GitHub</a>
+        </div>
+        <small id="copyStatus"></small>
+      </div>
+    </section>
+
+    <section class="updates section-shell" id="updates">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Обновления</div>
+          <h2>Последние версии.</h2>
+        </div>
+      </div>
+      <div class="updates-grid" id="updatesGrid"></div>
+    </section>
+
+    <section class="cta section-shell">
+      <div class="cta-card glass-surface">
+        <div class="cta-orb"></div>
+        <div class="section-kicker">GeraStore</div>
+        <h2>Один репозиторий.<br><span>Много приложений.</span></h2>
+        <p>Следи за каталогом и обновлениями GeraStore.</p>
+        <div class="hero-actions">
+          <a class="liquid-button liquid-button-primary" href="#catalog">Перейти в каталог</a>
+          <a class="glass-button" href="https://github.com/gkuhtov/GeraStore" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="footer-brand">
+      <img src="assets/images/gerastore-mark.svg" alt="">
+      <strong>GeraStore</strong>
+      <span>IPA Repository for GBox</span>
+    </div>
+    <div class="footer-links">
+      <a href="#catalog">Каталог</a>
+      <a href="#install">Как установить</a>
+      <a href="https://github.com/gkuhtov/GeraStore" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-copy">© 2026 GeraStore</div>
+  </footer>
+
+  <div class="toast glass-panel" id="toast"></div>
+  <script src="assets/js/gerastore.js"></script>
+</body>
+</html>

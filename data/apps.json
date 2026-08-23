@@ -1,0 +1,15 @@
+{
+  "apps": [
+    {
+      "name": "GeraStore Demo",
+      "version": "—",
+      "category": "Утилиты",
+      "description": "Демо-карточка. Заменяется данными из apps.json вашего репозитория.",
+      "iconURL": "assets/images/gerastore-mark.svg",
+      "downloadURL": "#",
+      "updated": "—",
+      "minIOSVersion": "—",
+      "bundleIdentifier": "com.gkuhtov.gerastore"
+    }
+  ]
+}
