@@ -1,3 +1,17 @@
+/*
+  GeraStore Web
+  URL cleanup + repository catalog + adaptive hero video
+*/
+
+/* Убираем ?utm_source=... и другие параметры из адреса */
+if (window.location.search) {
+  window.history.replaceState(
+    {},
+    document.title,
+    window.location.pathname + window.location.hash
+  );
+}
+
 const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 const LOCAL_APPS_URL = "data/apps.json";
 
@@ -7,78 +21,150 @@ const state = {
   query: ""
 };
 
-const $ = (s) => document.querySelector(s);
+const $ = (selector) => document.querySelector(selector);
 
-const escapeHtml = (v = "") =>
-  String(v).replace(/[&<>"']/g, c => ({
+const escapeHtml = (value = "") =>
+  String(value).replace(/[&<>"']/g, character => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#039;"
-  }[c]));
+  }[character]));
+
+/* ---------------------------------------------------------
+   APP DATA
+--------------------------------------------------------- */
 
 function normalizeApps(raw) {
   const list = Array.isArray(raw)
     ? raw
     : (raw?.apps || raw?.items || []);
 
-  return list.map((a, i) => ({
-    id: a.bundleIdentifier || a.bundleID || a.identifier || `app-${i}`,
-    name: a.name || a.title || "Без названия",
-    version: a.version || a.versionName || a.appVersion || "—",
-    size: a.size || a.fileSize || a.ipaSize || "—",
-    category: a.category || a.genre || "Другое",
-    description: a.description || "Приложение из GeraStore.",
-    icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
-    download: a.downloadURL || a.downloadUrl || a.url || "#",
-    updated: a.updated || a.date || a.lastUpdated || "—",
-    ios: a.minIOSVersion || a.ios || "—"
+  return list.map((app, index) => ({
+    id:
+      app.bundleIdentifier ||
+      app.bundleID ||
+      app.identifier ||
+      `app-${index}`,
+
+    name:
+      app.name ||
+      app.title ||
+      "Без названия",
+
+    version:
+      app.version ||
+      app.versionName ||
+      app.appVersion ||
+      "—",
+
+    size:
+      app.size ||
+      app.fileSize ||
+      app.ipaSize ||
+      "—",
+
+    category:
+      app.category ||
+      app.genre ||
+      "Другое",
+
+    description:
+      app.description ||
+      "Приложение из GeraStore.",
+
+    icon:
+      app.iconURL ||
+      app.icon ||
+      app.iconUrl ||
+      "assets/images/gerastore-mark.svg",
+
+    download:
+      app.downloadURL ||
+      app.downloadUrl ||
+      app.url ||
+      "#",
+
+    updated:
+      app.updated ||
+      app.date ||
+      app.lastUpdated ||
+      "—",
+
+    ios:
+      app.minIOSVersion ||
+      app.ios ||
+      "—"
   }));
 }
 
 async function loadApps() {
   try {
-    const repo = await fetch(REPO_URL, { cache: "no-store" });
+    const repositoryResponse = await fetch(
+      REPO_URL,
+      { cache: "no-store" }
+    );
 
-    if (repo.ok) {
-      const data = await repo.json();
+    if (repositoryResponse.ok) {
+      const repository = await repositoryResponse.json();
 
-      if (Array.isArray(data.apps)) {
-        state.apps = normalizeApps(data.apps);
-      } else if (data.appsURL) {
-        const r = await fetch(data.appsURL, { cache: "no-store" });
+      if (Array.isArray(repository.apps)) {
+        state.apps = normalizeApps(repository.apps);
+      } else if (repository.appsURL) {
+        const appsResponse = await fetch(
+          repository.appsURL,
+          { cache: "no-store" }
+        );
 
-        if (r.ok) {
-          state.apps = normalizeApps(await r.json());
+        if (appsResponse.ok) {
+          state.apps = normalizeApps(
+            await appsResponse.json()
+          );
         }
       }
     }
-  } catch (e) {
-    console.warn("GeraStore remote repository unavailable:", e);
+  } catch (error) {
+    console.warn(
+      "GeraStore remote repository unavailable:",
+      error
+    );
   }
 
+  /* Локальный fallback */
   if (!state.apps.length) {
     try {
-      const local = await fetch(LOCAL_APPS_URL, { cache: "no-store" });
+      const localResponse = await fetch(
+        LOCAL_APPS_URL,
+        { cache: "no-store" }
+      );
 
-      if (local.ok) {
-        state.apps = normalizeApps(await local.json());
+      if (localResponse.ok) {
+        state.apps = normalizeApps(
+          await localResponse.json()
+        );
       }
-    } catch (e) {
-      console.warn("Local apps database unavailable:", e);
+    } catch (error) {
+      console.warn(
+        "Local apps database unavailable:",
+        error
+      );
     }
   }
 
   renderAll();
 }
 
+/* ---------------------------------------------------------
+   CATEGORIES
+--------------------------------------------------------- */
+
 function categories() {
   return [
     "Все",
     ...new Set(
       state.apps
-        .map(a => a.category)
+        .map(app => app.category)
         .filter(Boolean)
     )
   ];
@@ -90,84 +176,115 @@ function renderFilters() {
   if (!container) return;
 
   container.innerHTML = categories()
-    .map(c => `
+    .map(category => `
       <button
-        class="filter ${c === state.category ? "active" : ""}"
-        data-category="${escapeHtml(c)}"
+        class="filter ${
+          category === state.category ? "active" : ""
+        }"
+        data-category="${escapeHtml(category)}"
       >
-        ${escapeHtml(c)}
+        ${escapeHtml(category)}
       </button>
     `)
     .join("");
 
-  container.querySelectorAll(".filter").forEach(btn => {
-    btn.addEventListener("click", () => {
-      state.category = btn.dataset.category;
-      renderAll();
+  container
+    .querySelectorAll(".filter")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        state.category = button.dataset.category;
+        renderAll();
+      });
     });
-  });
 }
+
+/* ---------------------------------------------------------
+   SEARCH
+--------------------------------------------------------- */
 
 function filteredApps() {
-  const q = state.query.trim().toLowerCase();
+  const query = state.query
+    .trim()
+    .toLowerCase();
 
-  return state.apps.filter(a => {
-    const cat =
+  return state.apps.filter(app => {
+    const categoryMatches =
       state.category === "Все" ||
-      a.category === state.category;
+      app.category === state.category;
 
-    const text = `${a.name} ${a.id} ${a.description}`.toLowerCase();
+    const searchableText =
+      `${app.name} ${app.id} ${app.description}`
+        .toLowerCase();
 
-    return cat && (!q || text.includes(q));
+    return (
+      categoryMatches &&
+      (!query || searchableText.includes(query))
+    );
   });
 }
 
-function appCard(a) {
+/* ---------------------------------------------------------
+   APP CARDS
+--------------------------------------------------------- */
+
+function appCard(app) {
   return `
     <article class="app-card glass-panel">
+
       <div>
+
         <div class="app-top">
+
           <img
             class="app-icon"
-            src="${escapeHtml(a.icon)}"
+            src="${escapeHtml(app.icon)}"
             alt=""
             loading="lazy"
             onerror="this.src='assets/images/gerastore-mark.svg'"
           >
 
           <div>
+
             <div class="app-title">
-              ${escapeHtml(a.name)}
+              ${escapeHtml(app.name)}
             </div>
 
             <div class="app-meta">
-              v${escapeHtml(a.version)} · ${escapeHtml(a.ios)}
+              v${escapeHtml(app.version)}
+              ·
+              ${escapeHtml(app.ios)}
             </div>
+
           </div>
+
         </div>
 
         <p class="app-desc">
-          ${escapeHtml(a.description)}
+          ${escapeHtml(app.description)}
         </p>
+
       </div>
 
       <div class="app-bottom">
+
         <div class="app-tags">
+
           <span class="tag">
-            ${escapeHtml(a.category)}
+            ${escapeHtml(app.category)}
           </span>
 
           <span class="tag">
-            ${escapeHtml(a.size)}
+            ${escapeHtml(app.size)}
           </span>
+
         </div>
 
         ${
-          a.download !== "#"
+          app.download !== "#"
             ? `
               <a
                 class="app-link"
-                href="${escapeHtml(a.download)}"
+                href="${escapeHtml(app.download)}"
                 target="_blank"
                 rel="noopener"
               >
@@ -180,7 +297,9 @@ function appCard(a) {
               </span>
             `
         }
+
       </div>
+
     </article>
   `;
 }
@@ -201,6 +320,10 @@ function renderCatalog() {
     `;
 }
 
+/* ---------------------------------------------------------
+   UPDATES
+--------------------------------------------------------- */
+
 function renderUpdates() {
   const container = $("#updatesGrid");
 
@@ -208,47 +331,69 @@ function renderUpdates() {
 
   const apps = [...state.apps]
     .sort((a, b) =>
-      String(b.updated).localeCompare(String(a.updated))
+      String(b.updated).localeCompare(
+        String(a.updated)
+      )
     )
     .slice(0, 6);
 
   container.innerHTML = apps.length
-    ? apps.map(a => `
+    ? apps.map(app => `
       <article class="update-card glass-panel">
+
         <div>
-          <strong>${escapeHtml(a.name)}</strong>
-          <span>${escapeHtml(a.updated)}</span>
+
+          <strong>
+            ${escapeHtml(app.name)}
+          </strong>
+
+          <span>
+            ${escapeHtml(app.updated)}
+          </span>
+
         </div>
 
         <span class="update-version">
-          v${escapeHtml(a.version)}
+          v${escapeHtml(app.version)}
         </span>
+
       </article>
     `).join("")
     : `
       <div class="loading-card glass-panel">
-        Данные об обновлениях появятся после подключения каталога.
+        Данные об обновлениях появятся после
+        подключения каталога.
       </div>
     `;
 }
 
+/* ---------------------------------------------------------
+   STATISTICS
+--------------------------------------------------------- */
+
 function renderStats() {
   const apps = $("[data-stat='apps']");
-  const categoriesEl = $("[data-stat='categories']");
-  const versions = $("[data-stat='versions']");
+  const categoriesElement =
+    $("[data-stat='categories']");
+  const versions =
+    $("[data-stat='versions']");
 
   if (apps) {
     apps.textContent = state.apps.length;
   }
 
-  if (categoriesEl) {
-    categoriesEl.textContent =
-      categories().filter(x => x !== "Все").length;
+  if (categoriesElement) {
+    categoriesElement.textContent =
+      categories()
+        .filter(category => category !== "Все")
+        .length;
   }
 
   if (versions) {
     versions.textContent =
-      new Set(state.apps.map(a => a.version)).size;
+      new Set(
+        state.apps.map(app => app.version)
+      ).size;
   }
 }
 
@@ -259,16 +404,24 @@ function renderAll() {
   renderStats();
 }
 
+/* ---------------------------------------------------------
+   SEARCH SETUP
+--------------------------------------------------------- */
+
 function setupSearch() {
   const input = $("#appSearch");
 
   if (!input) return;
 
-  input.addEventListener("input", e => {
-    state.query = e.target.value;
+  input.addEventListener("input", event => {
+    state.query = event.target.value;
     renderCatalog();
   });
 }
+
+/* ---------------------------------------------------------
+   REPOSITORY COPY
+--------------------------------------------------------- */
 
 function setupRepoCopy() {
   const button = $("#copyRepo");
@@ -277,46 +430,44 @@ function setupRepoCopy() {
   if (!button) return;
 
   button.addEventListener("click", async () => {
+
     const repoUrl =
       "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 
     try {
-      await navigator.clipboard.writeText(repoUrl);
+
+      await navigator.clipboard.writeText(
+        repoUrl
+      );
 
       if (status) {
         status.textContent =
           "Ссылка на репозиторий скопирована.";
       }
-    } catch (e) {
+
+    } catch (error) {
+
       if (status) {
         status.textContent =
-          "Скопируй ссылку вручную: " + repoUrl;
+          "Скопируй ссылку вручную: " +
+          repoUrl;
       }
+
     }
   });
 }
 
-/*
-  HERO VIDEO
-
-  Логика:
-
-  1. Проверяем поддержку видео.
-  2. Используем облегчённое background-web.mp4.
-  3. Если видео загрузилось, показываем его.
-  4. Если видео не загрузилось, остаётся hero-poster.
-  5. При Save-Data видео отключается.
-  6. При reduced-data видео отключается.
-  7. При слабом соединении используем статичный фон.
-*/
+/* ---------------------------------------------------------
+   HERO VIDEO
+--------------------------------------------------------- */
 
 function setupHeroVideo() {
   const video = $("#heroVideo");
   const status = $("#mediaStatus");
+  const poster =
+    document.querySelector(".hero-poster");
 
   if (!video) return;
-
-  const poster = document.querySelector(".hero-poster");
 
   const setStatus = text => {
     if (status) {
@@ -325,6 +476,7 @@ function setupHeroVideo() {
   };
 
   const usePoster = text => {
+
     video.classList.remove("is-ready");
 
     if (poster) {
@@ -335,49 +487,51 @@ function setupHeroVideo() {
   };
 
   const useVideo = () => {
+
     if (poster) {
       poster.style.opacity = "0";
     }
 
     video.classList.add("is-ready");
+
     setStatus("Live visual");
   };
 
-  /*
-    Save Data.
-  */
+  /* Экономия трафика */
   if (
     navigator.connection &&
     navigator.connection.saveData
   ) {
+
     video.pause();
     video.removeAttribute("src");
     video.load();
 
     usePoster("Экономия трафика");
+
     return;
   }
 
-  /*
-    Reduced Data.
-  */
+  /* Reduced Data */
   if (
     window.matchMedia &&
-    window.matchMedia("(prefers-reduced-data: reduce)").matches
+    window.matchMedia(
+      "(prefers-reduced-data: reduce)"
+    ).matches
   ) {
+
     video.pause();
     video.removeAttribute("src");
     video.load();
 
     usePoster("Статичный режим");
+
     return;
   }
 
-  /*
-    Медленное соединение.
-    На 2G/slow-2g видео отключаем.
-  */
-  const connection = navigator.connection;
+  /* Очень медленное соединение */
+  const connection =
+    navigator.connection;
 
   if (
     connection &&
@@ -386,59 +540,97 @@ function setupHeroVideo() {
       connection.effectiveType === "2g"
     )
   ) {
+
     video.pause();
     video.removeAttribute("src");
     video.load();
 
     usePoster("Статичный режим");
+
     return;
   }
 
-  /*
-    Устанавливаем облегчённое видео.
-  */
-  video.src = "assets/video/background-web.mp4";
+  /* Используем оптимизированное видео */
+  video.src =
+    "assets/video/background-web.mp4";
+
   video.load();
 
-  let ready = false;
+  let videoReady = false;
 
   const timeout = setTimeout(() => {
-    if (!ready) {
+
+    if (!videoReady) {
       usePoster("Статичный режим");
     }
+
   }, 8000);
 
-  video.addEventListener("canplay", () => {
-    ready = true;
-    clearTimeout(timeout);
-    useVideo();
+  video.addEventListener(
+    "canplay",
+    () => {
 
-    video.play().catch(() => {
+      videoReady = true;
+
+      clearTimeout(timeout);
+
+      useVideo();
+
+      video.play().catch(() => {
+        usePoster("Статичный режим");
+      });
+
+    },
+    { once: true }
+  );
+
+  video.addEventListener(
+    "error",
+    () => {
+
+      clearTimeout(timeout);
+
       usePoster("Статичный режим");
-    });
-  }, { once: true });
 
-  video.addEventListener("error", () => {
-    clearTimeout(timeout);
-    usePoster("Статичный режим");
-  }, { once: true });
+    },
+    { once: true }
+  );
 
-  video.addEventListener("stalled", () => {
-    if (!ready) {
-      usePoster("Статичный режим");
+  video.addEventListener(
+    "stalled",
+    () => {
+
+      if (!videoReady) {
+        usePoster("Статичный режим");
+      }
+
     }
-  });
+  );
 
-  video.addEventListener("abort", () => {
-    if (!ready) {
-      usePoster("Статичный режим");
+  video.addEventListener(
+    "abort",
+    () => {
+
+      if (!videoReady) {
+        usePoster("Статичный режим");
+      }
+
     }
-  });
+  );
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  setupSearch();
-  setupRepoCopy();
-  setupHeroVideo();
-  loadApps();
-});
+/* ---------------------------------------------------------
+   START
+--------------------------------------------------------- */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    setupSearch();
+    setupRepoCopy();
+    setupHeroVideo();
+    loadApps();
+
+  }
+);
