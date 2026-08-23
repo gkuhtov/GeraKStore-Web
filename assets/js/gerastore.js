@@ -1,4 +1,4 @@
-const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
+const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraKStore/main/repo.json";
 const LOCAL_APPS_URL = "data/apps.json";
 
 const state = {
@@ -29,7 +29,7 @@ function normalizeApps(raw) {
     version: a.version || a.versionName || a.appVersion || "—",
     size: a.size || a.fileSize || a.ipaSize || "—",
     category: a.category || a.genre || "Другое",
-    description: a.description || "Приложение из GeraStore.",
+    description: a.description || "Приложение из GeraKStore.",
     icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
     download: a.downloadURL || a.downloadUrl || a.url || "#",
     updated: a.updated || a.date || a.lastUpdated || "—",
@@ -207,8 +207,8 @@ function renderStats() {
   $("[data-stat='categories']").textContent =
     categories().filter(value => value !== "Все").length;
 
-  $("[data-stat='versions']").textContent =
-    new Set(state.apps.map(app => app.version)).size;
+  $("[data-stat='builds']").textContent =
+    state.apps.length;
 }
 
 function renderAll() {
@@ -267,7 +267,7 @@ function setupTheme() {
 function setupRepoCopy() {
   $("#copyRepo").addEventListener("click", async () => {
     const repo =
-      "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
+      "https://raw.githubusercontent.com/gkuhtov/GeraKStore/main/repo.json";
 
     try {
       await navigator.clipboard.writeText(repo);
