@@ -465,7 +465,36 @@ function setupAppCardAnimation() {
 }
 
 
+/* ---------------- CARD CURSOR LIGHT ---------------- */
+
+function setupCardCursorLight() {
+  document.addEventListener("pointermove", event => {
+    const card = event.target.closest(".app-card");
+
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+    card.style.setProperty("--mouse-x", `${x}%`);
+    card.style.setProperty("--mouse-y", `${y}%`);
+  }, {passive:true});
+
+  document.addEventListener("pointerleave", event => {
+    const card = event.target.closest(".app-card");
+
+    if (!card) return;
+
+    card.style.setProperty("--mouse-x", "50%");
+    card.style.setProperty("--mouse-y", "50%");
+  }, true);
+}
+
+
 /* ---------------- REPO COPY ---------------- */
+
 
 function setupRepoCopy() {
   $("#copyRepo").addEventListener("click", async () => {
@@ -819,6 +848,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupTheme();
   setupBackToTop();
   setupAppCardAnimation();
+  setupCardCursorLight();
   setupSearch();
   setupRepoCopy();
   setupModal();

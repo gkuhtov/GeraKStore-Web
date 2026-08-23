@@ -2890,3 +2890,374 @@ html[data-theme="light"] .theme-icon-moon{
   }
 }
 
+
+/* =========================================================
+   GeraKStore Liquid Glass v3
+   Финальная визуальная полировка
+   ========================================================= */
+
+/* ---------- Theme icon animation ---------- */
+
+.theme-toggle{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  transition:
+    transform .25s cubic-bezier(.2,.8,.2,1),
+    border-color .3s ease,
+    box-shadow .3s ease,
+    background .3s ease;
+}
+
+.theme-toggle::before{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  border-radius:50%;
+  background:radial-gradient(
+    circle,
+    rgba(255,79,163,.18),
+    transparent 62%
+  );
+  opacity:0;
+  transform:scale(.5);
+  transition:
+    opacity .35s ease,
+    transform .5s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+  z-index:-1;
+}
+
+.theme-toggle:hover::before{
+  opacity:1;
+  transform:scale(1);
+}
+
+.theme-icon{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+  transition:
+    opacity .38s ease,
+    transform .55s cubic-bezier(.2,.8,.2,1);
+}
+
+.theme-icon svg{
+  width:19px;
+  height:19px;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.12));
+}
+
+.theme-icon-sun{
+  opacity:0;
+  transform:rotate(-90deg) scale(.45);
+}
+
+.theme-icon-moon{
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+
+html[data-theme="light"] .theme-icon-sun{
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+
+html[data-theme="light"] .theme-icon-moon{
+  opacity:0;
+  transform:rotate(90deg) scale(.45);
+}
+
+.theme-toggle:active{
+  transform:scale(.92);
+}
+
+
+/* ---------- Cursor light inside app cards ---------- */
+
+.app-card{
+  --mouse-x:50%;
+  --mouse-y:50%;
+}
+
+.app-card::before{
+  background:
+    radial-gradient(
+      260px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255,255,255,.105),
+      transparent 62%
+    ),
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(255,255,255,.14),
+      transparent 32%
+    ),
+    linear-gradient(
+      120deg,
+      transparent 35%,
+      rgba(255,255,255,.035) 50%,
+      transparent 65%
+    );
+  opacity:.9;
+  transition:background .18s ease;
+}
+
+.app-card:hover{
+  transform:translateY(-7px) scale(1.012);
+  border-color:rgba(255,79,163,.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.20),
+    0 28px 80px rgba(0,0,0,.30),
+    0 0 50px rgba(255,79,163,.09);
+}
+
+.app-card:hover .app-icon{
+  transform:translateY(-3px) scale(1.04);
+}
+
+
+/* ---------- Selected card ---------- */
+
+.app-card.is-selected{
+  border-color:rgba(255,79,163,.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    0 0 0 1px rgba(255,79,163,.28),
+    0 0 0 5px rgba(255,79,163,.07),
+    0 0 42px rgba(255,79,163,.18),
+    0 28px 80px rgba(0,0,0,.32);
+}
+
+.app-card.is-selected .app-icon{
+  box-shadow:
+    0 0 0 3px rgba(255,79,163,.42),
+    0 0 0 7px rgba(255,79,163,.08),
+    0 18px 42px rgba(0,0,0,.30);
+}
+
+@keyframes appCardSelectV3{
+  0%{
+    transform:translateY(0) scale(.97);
+    filter:brightness(.92);
+  }
+
+  45%{
+    transform:translateY(-3px) scale(1.018);
+    filter:brightness(1.06);
+  }
+
+  100%{
+    transform:translateY(0) scale(1);
+    filter:brightness(1);
+  }
+}
+
+.app-card.selecting{
+  animation:appCardSelectV3 .48s cubic-bezier(.2,.8,.2,1);
+}
+
+
+/* ---------- Modal ---------- */
+
+.app-modal.open .modal-backdrop{
+  animation:modalBackdropIn .38s ease both;
+}
+
+.app-modal.open .app-detail{
+  animation:modalDetailIn .48s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes modalBackdropIn{
+  from{
+    opacity:0;
+    backdrop-filter:blur(0);
+    -webkit-backdrop-filter:blur(0);
+  }
+
+  to{
+    opacity:1;
+    backdrop-filter:blur(28px) saturate(135%);
+    -webkit-backdrop-filter:blur(28px) saturate(135%);
+  }
+}
+
+@keyframes modalDetailIn{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.965);
+    filter:blur(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+
+/* ---------- Detail hero ---------- */
+
+.detail-hero{
+  transition:
+    border-color .35s ease,
+    box-shadow .35s ease,
+    background .35s ease;
+}
+
+.detail-hero:hover{
+  border-color:rgba(255,255,255,.14);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.10),
+    0 18px 55px rgba(0,0,0,.16);
+}
+
+.detail-icon{
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    box-shadow .4s ease;
+}
+
+.detail-hero:hover .detail-icon{
+  transform:translateY(-2px) scale(1.025);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.34),
+    0 0 30px rgba(255,79,163,.10),
+    inset 0 1px rgba(255,255,255,.24);
+}
+
+
+/* ---------- Buttons ---------- */
+
+.liquid-button,
+.glass-button,
+.glass-chip{
+  transition:
+    transform .25s cubic-bezier(.2,.8,.2,1),
+    border-color .3s ease,
+    box-shadow .3s ease,
+    background .3s ease;
+}
+
+.liquid-button:hover,
+.glass-button:hover{
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.20),
+    0 12px 35px rgba(0,0,0,.22);
+}
+
+.liquid-button:active,
+.glass-button:active{
+  transform:scale(.97);
+}
+
+
+/* ---------- Back to top ---------- */
+
+.back-to-top{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.back-to-top::before{
+  content:"";
+  position:absolute;
+  inset:-50%;
+  background:radial-gradient(
+    circle,
+    rgba(255,79,163,.20),
+    transparent 60%
+  );
+  opacity:0;
+  transform:scale(.6);
+  transition:
+    opacity .35s ease,
+    transform .45s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+  z-index:-1;
+}
+
+.back-to-top:hover::before{
+  opacity:1;
+  transform:scale(1);
+}
+
+.back-to-top:hover{
+  transform:translateY(-3px) scale(1.04);
+}
+
+
+/* ---------- Light theme ---------- */
+
+html[data-theme="light"] .app-card::before{
+  background:
+    radial-gradient(
+      260px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255,255,255,.38),
+      transparent 62%
+    ),
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(255,255,255,.62),
+      transparent 32%
+    );
+}
+
+html[data-theme="light"] .app-card.is-selected{
+  border-color:rgba(255,79,163,.58);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.90),
+    0 0 0 1px rgba(255,79,163,.20),
+    0 0 0 5px rgba(255,79,163,.06),
+    0 0 40px rgba(255,79,163,.10),
+    0 28px 70px rgba(30,35,50,.16);
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:620px){
+
+  .app-card:hover{
+    transform:translateY(-3px) scale(1.005);
+  }
+
+  .app-card.is-selected{
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.20),
+      0 0 0 1px rgba(255,79,163,.28),
+      0 0 0 4px rgba(255,79,163,.06),
+      0 18px 45px rgba(0,0,0,.24);
+  }
+
+  .app-modal{
+    padding:8px;
+  }
+
+  .back-to-top{
+    right:14px;
+    bottom:14px;
+  }
+}
+
+
+/* ---------- Reduced motion ---------- */
+
+@media(prefers-reduced-motion:reduce){
+
+  .theme-icon,
+  .theme-toggle,
+  .app-card,
+  .app-icon,
+  .app-modal.open .modal-backdrop,
+  .app-modal.open .app-detail,
+  .detail-icon,
+  .back-to-top{
+    animation:none !important;
+    transition:none !important;
+  }
+
+}
+
