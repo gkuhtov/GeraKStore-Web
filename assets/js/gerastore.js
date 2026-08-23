@@ -33,7 +33,14 @@ function normalizeApps(raw) {
     icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
     download: a.downloadURL || a.downloadUrl || a.url || "#",
     updated: a.updated || a.date || a.lastUpdated || "—",
-    ios: a.minIOSVersion || a.ios || "—"
+    ios: a.minIOSVersion || a.ios || "—",
+    whatsNew:
+      a.whatsNew ||
+      a.whatIsNew ||
+      a.changelog ||
+      a.releaseNotes ||
+      a.notes ||
+      ""
   }));
 }
 
@@ -128,7 +135,8 @@ function appCard(app) {
       role="button"
       aria-label="Открыть ${escapeHtml(app.name)}">
 
-      <div class="app-top">
+      <div class="app-card-main">
+
         <img
           class="app-icon"
           src="${escapeHtml(app.icon)}"
@@ -136,21 +144,35 @@ function appCard(app) {
           loading="lazy"
           onerror="this.src='assets/images/gerastore-mark.svg'">
 
-        <div>
-          <div class="app-title">${escapeHtml(app.name)}</div>
+        <div class="app-card-info">
+          <div class="app-title">
+            ${escapeHtml(app.name)}
+          </div>
+
+          <div class="app-description">
+            ${escapeHtml(app.description)}
+          </div>
+
           <div class="app-meta">
-            v${escapeHtml(app.version)} · iOS ${escapeHtml(app.ios)}
+            <span>v${escapeHtml(app.version)}</span>
+            <span>·</span>
+            <span>${escapeHtml(app.size)}</span>
           </div>
         </div>
+
       </div>
 
-      <div class="app-card-bottom">
+      <div class="app-card-footer">
         <span class="app-category">
           ${escapeHtml(app.category)}
         </span>
 
-        <span class="app-arrow">›</span>
+        <span class="app-arrow">
+          Подробнее
+          <b>›</b>
+        </span>
       </div>
+
     </article>
   `;
 }
@@ -290,82 +312,127 @@ function openApp(id) {
   const content = $("#appDetailContent");
 
   content.innerHTML = `
-    <div class="detail-head">
+    <div class="detail-hero">
+
       <img
         class="detail-icon"
         src="${escapeHtml(app.icon)}"
         alt=""
         onerror="this.src='assets/images/gerastore-mark.svg'">
 
-      <div>
+      <div class="detail-main">
+
+        <div class="detail-category">
+          ${escapeHtml(app.category)}
+        </div>
+
         <h2 class="detail-title">
           ${escapeHtml(app.name)}
         </h2>
 
-        <div class="detail-subtitle">
-          v${escapeHtml(app.version)}
-          · ${escapeHtml(app.category)}
+        <p class="detail-meta">
+          Версия ${escapeHtml(app.version)}
+          · ${escapeHtml(app.size)}
+        </p>
+
+        <div class="detail-actions">
+          ${
+            app.download !== "#"
+              ? `
+                <a
+                  class="liquid-button liquid-button-primary detail-download"
+                  href="${escapeHtml(app.download)}"
+                  target="_blank"
+                  rel="noopener">
+                  Скачать
+                </a>
+              `
+              : `
+                <span class="glass-button detail-download disabled">
+                  Скоро
+                </span>
+              `
+          }
         </div>
-      </div>
-    </div>
 
-    <p class="detail-description">
-      ${escapeHtml(app.description)}
-    </p>
-
-    <div class="detail-info">
-
-      <div class="detail-info-item">
-        <span>Bundle ID</span>
-        <strong>${escapeHtml(app.id)}</strong>
-      </div>
-
-      <div class="detail-info-item">
-        <span>Версия</span>
-        <strong>${escapeHtml(app.version)}</strong>
-      </div>
-
-      <div class="detail-info-item">
-        <span>Минимальная iOS</span>
-        <strong>${escapeHtml(app.ios)}</strong>
-      </div>
-
-      <div class="detail-info-item">
-        <span>Размер IPA</span>
-        <strong>${escapeHtml(app.size)}</strong>
-      </div>
-
-      <div class="detail-info-item">
-        <span>Категория</span>
-        <strong>${escapeHtml(app.category)}</strong>
-      </div>
-
-      <div class="detail-info-item">
-        <span>Обновлено</span>
-        <strong>${escapeHtml(app.updated)}</strong>
       </div>
 
     </div>
 
-    <div class="detail-actions">
-      ${
-        app.download !== "#"
-          ? `
-            <a
-              class="liquid-button liquid-button-primary"
-              href="${escapeHtml(app.download)}"
-              target="_blank"
-              rel="noopener">
-              Скачать IPA
-            </a>
-          `
-          : `
-            <span class="glass-button">
-              Ссылка появится позже
-            </span>
-          `
-      }
-    </div>
+    <div class="detail-divider"></div>
+
+    <section class="detail-section">
+      <div class="section-kicker">Описание</div>
+
+      <p class="detail-description">
+        ${escapeHtml(app.description)}
+      </p>
+    </section>
+
+    ${
+      app.whatsNew
+        ? `
+          <section class="detail-section whats-new-section">
+            <div class="section-kicker">Что нового</div>
+
+            <div class="whats-new">
+              <div class="whats-new-version">
+                Версия ${escapeHtml(app.version)}
+              </div>
+
+              <p>
+                ${escapeHtml(app.whatsNew)}
+              </p>
+            </div>
+          </section>
+        `
+        : ""
+    }
+
+    <section class="detail-section">
+
+      <div class="section-kicker">Информация</div>
+
+      <div class="detail-info">
+
+        <div class="detail-info-item">
+          <span>Версия</span>
+          <strong>${escapeHtml(app.version)}</strong>
+        </div>
+
+        <div class="detail-info-item">
+          <span>Размер</span>
+          <strong>${escapeHtml(app.size)}</strong>
+        </div>
+
+        <div class="detail-info-item">
+          <span>Минимальная iOS</span>
+          <strong>${escapeHtml(app.ios)}</strong>
+        </div>
+
+        <div class="detail-info-item">
+          <span>Категория</span>
+          <strong>${escapeHtml(app.category)}</strong>
+        </div>
+
+        <div class="detail-info-item detail-info-wide">
+          <span>Bundle ID</span>
+          <strong>${escapeHtml(app.id)}</strong>
+        </div>
+
+        <div class="detail-info-item">
+          <span>Обновлено</span>
+          <strong>${escapeHtml(app.updated)}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="detail-section detail-note">
+      <span>GeraKStore</span>
+      <p>Приложение доступно для установки через репозиторий GeraKStore.</p>
+    </section>
   `;
 
   $("#appModal").classList.add("open");
