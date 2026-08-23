@@ -26,11 +26,22 @@ function normalizeApps(raw) {
   return list.map((a, i) => ({
     id: a.bundleIdentifier || a.bundleID || a.identifier || `app-${i}`,
     name: a.name || a.title || "Без названия",
+    developer:
+      a.developerName ||
+      a.developer ||
+      a.author ||
+      "Неизвестный разработчик",
     version: a.version || a.versionName || a.appVersion || "—",
     size: a.size || a.fileSize || a.ipaSize || "—",
     category: a.category || a.genre || "Другое",
     description: a.description || "Приложение из GeraKStore.",
     icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
+    screenshots:
+      Array.isArray(a.screenshots)
+        ? a.screenshots
+        : Array.isArray(a.screenshotURLs)
+          ? a.screenshotURLs
+          : [],
     download: a.downloadURL || a.downloadUrl || a.url || "#",
     updated: a.updated || a.date || a.lastUpdated || "—",
     ios: a.minIOSVersion || a.ios || "—",
@@ -40,7 +51,19 @@ function normalizeApps(raw) {
       a.changelog ||
       a.releaseNotes ||
       a.notes ||
-      ""
+      "",
+    versions: Array.isArray(a.versions)
+      ? a.versions.map(version => ({
+          version: version.version || version.versionName || "—",
+          date: version.date || version.versionDate || "—",
+          size: version.size || version.fileSize || version.ipaSize || "",
+          download:
+            version.downloadURL ||
+            version.downloadUrl ||
+            version.url ||
+            "#"
+        }))
+      : []
   }));
 }
 
@@ -229,8 +252,37 @@ function renderStats() {
   $("[data-stat='categories']").textContent =
     categories().filter(value => value !== "Все").length;
 
-  $("[data-stat='builds']").textContent =
-    state.apps.length;
+  loadRepoUpdatedDate();
+}
+
+async function loadRepoUpdatedDate() {
+  const element = $("[data-stat='updated']");
+
+  if (!element) return;
+
+  try {
+    const response = await fetch(
+      "https://api.github.com/repos/gkuhtov/GeraStore",
+      {cache:"no-store"}
+    );
+
+    if (!response.ok) throw new Error("GitHub API error");
+
+    const repo = await response.json();
+
+    if (!repo.pushed_at) throw new Error("Дата обновления не найдена");
+
+    const date = new Date(repo.pushed_at);
+
+    element.textContent = date.toLocaleDateString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  } catch(error) {
+    console.warn("Не удалось получить дату обновления репозитория.", error);
+    element.textContent = "—";
+  }
 }
 
 function renderAll() {
@@ -330,6 +382,10 @@ function openApp(id) {
           ${escapeHtml(app.name)}
         </h2>
 
+        <p class="detail-developer">
+          ${escapeHtml(app.developer)}
+        </p>
+
         <p class="detail-meta">
           Версия ${escapeHtml(app.version)}
           · ${escapeHtml(app.size)}
@@ -370,6 +426,28 @@ function openApp(id) {
     </section>
 
     ${
+      app.screenshots.length
+        ? `
+          <section class="detail-section detail-screenshots-section">
+            <div class="section-kicker">Скриншоты</div>
+
+            <div class="detail-screenshots">
+              ${app.screenshots.map((image, index) => `
+                <div class="detail-screenshot">
+                  <img
+                    src="${escapeHtml(image)}"
+                    alt="${escapeHtml(app.name)}. Скриншот ${index + 1}"
+                    loading="lazy"
+                    onerror="this.parentElement.remove()">
+                </div>
+              `).join("")}
+            </div>
+          </section>
+        `
+        : ""
+    }
+
+    ${
       app.whatsNew
         ? `
           <section class="detail-section whats-new-section">
@@ -383,6 +461,54 @@ function openApp(id) {
               <p>
                 ${escapeHtml(app.whatsNew)}
               </p>
+            </div>
+          </section>
+        `
+        : ""
+    }
+
+    ${
+      app.versions.length
+        ? `
+          <section class="detail-section">
+            <div class="section-kicker">Версии</div>
+
+            <div class="detail-versions">
+              ${app.versions.map((version, index) => `
+                <div class="detail-version-row">
+
+                  <div class="detail-version-info">
+                    <div class="detail-version-name">
+                      ${escapeHtml(version.version)}
+                      ${index === 0 ? '<span class="detail-current-version">Текущая</span>' : ""}
+                    </div>
+
+                    <div class="detail-version-date">
+                      ${escapeHtml(version.date)}
+                      ${version.size ? ` · ${escapeHtml(version.size)}` : ""}
+                    </div>
+                  </div>
+
+                  ${
+                    version.download !== "#"
+                      ? `
+                        <a
+                          class="liquid-button liquid-button-primary detail-version-download"
+                          href="${escapeHtml(version.download)}"
+                          target="_blank"
+                          rel="noopener">
+                          Скачать
+                        </a>
+                      `
+                      : `
+                        <span class="glass-button detail-version-download disabled">
+                          Недоступно
+                        </span>
+                      `
+                  }
+
+                </div>
+              `).join("")}
             </div>
           </section>
         `
