@@ -1988,8 +1988,15 @@ html[data-theme="light"] .detail-screenshot{
   -ms-overflow-style:none;
 }
 
+.app-detail{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
 .app-detail::-webkit-scrollbar{
   display:none;
+  width:0;
+  height:0;
 }
 
 /* =========================================================
