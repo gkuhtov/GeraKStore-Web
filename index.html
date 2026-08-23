@@ -30,7 +30,17 @@
 
     <div class="top-actions">
       <button class="theme-toggle glass-chip" id="themeToggle" type="button" aria-label="Переключить тему">
-        <span id="themeIcon">☾</span>
+        <span class="theme-icon theme-icon-sun" id="themeIconSun" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+        </span>
+        <span class="theme-icon theme-icon-moon" id="themeIconMoon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.7 8.7 0 1 0 20.5 15.2Z"></path>
+          </svg>
+        </span>
       </button>
 
       <a class="nav-action liquid-button" href="https://github.com/gkuhtov/GeraKStore" target="_blank" rel="noopener">
@@ -38,6 +48,13 @@
       </a>
     </div>
   </header>
+
+  <button class="back-to-top glass-chip" id="backToTop" type="button" aria-label="Вернуться наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5"></path>
+      <path d="M6 11l6-6 6 6"></path>
+    </svg>
+  </button>
 
   <main id="top">
 

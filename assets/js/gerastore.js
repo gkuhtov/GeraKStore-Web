@@ -394,11 +394,11 @@ function getInitialTheme() {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
 
-  const icon = $("#themeIcon");
+  const sun = $("#themeIconSun");
+  const moon = $("#themeIconMoon");
 
-  if (icon) {
-    icon.textContent = theme === "light" ? "☀" : "☾";
-  }
+  if (sun) sun.setAttribute("aria-hidden", theme !== "light" ? "true" : "false");
+  if (moon) moon.setAttribute("aria-hidden", theme === "light" ? "true" : "false");
 
   localStorage.setItem("gerastore-theme", theme);
 }
@@ -413,6 +413,57 @@ function setupTheme() {
     applyTheme(current === "dark" ? "light" : "dark");
   });
 }
+
+/* ---------------- BACK TO TOP ---------------- */
+
+function setupBackToTop() {
+  const button = $("#backToTop");
+
+  if (!button) return;
+
+  const update = () => {
+    button.classList.toggle("show", window.scrollY > 500);
+  };
+
+  window.addEventListener("scroll", update, {passive:true});
+
+  button.addEventListener("click", () => {
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  });
+
+  update();
+}
+
+
+/* ---------------- APP CARD ANIMATION ---------------- */
+
+function setupAppCardAnimation() {
+  document.addEventListener("click", event => {
+    const card = event.target.closest(".app-card");
+
+    if (!card) return;
+
+    document.querySelectorAll(".app-card.is-selected").forEach(item => {
+      if (item !== card) {
+        item.classList.remove("is-selected");
+      }
+    });
+
+    card.classList.remove("selecting");
+    void card.offsetWidth;
+
+    card.classList.add("is-selected");
+    card.classList.add("selecting");
+
+    setTimeout(() => {
+      card.classList.remove("selecting");
+    }, 400);
+  });
+}
+
 
 /* ---------------- REPO COPY ---------------- */
 
@@ -766,6 +817,8 @@ function cleanTrackingParameters() {
 document.addEventListener("DOMContentLoaded", () => {
   cleanTrackingParameters();
   setupTheme();
+  setupBackToTop();
+  setupAppCardAnimation();
   setupSearch();
   setupRepoCopy();
   setupModal();
