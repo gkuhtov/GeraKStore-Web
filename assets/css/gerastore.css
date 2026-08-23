@@ -3261,3 +3261,418 @@ html[data-theme="light"] .app-card.is-selected{
 
 }
 
+
+/* =========================================================
+   Final App Detail Glass Upgrade
+   ========================================================= */
+
+.app-modal{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .35s ease,
+    visibility .35s ease;
+}
+
+.app-modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+.app-modal .modal-backdrop{
+  opacity:0;
+  transition:opacity .4s ease;
+}
+
+.app-modal.open .modal-backdrop{
+  opacity:1;
+}
+
+.app-detail{
+  transform:translateY(32px) scale(.96);
+  opacity:0;
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 -1px 0 rgba(255,255,255,.04),
+    0 30px 100px rgba(0,0,0,.45),
+    0 0 70px rgba(255,79,163,.07);
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    opacity .3s ease,
+    box-shadow .4s ease;
+}
+
+.app-modal.open .app-detail{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}
+
+.modal-close{
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 10px 30px rgba(0,0,0,.22);
+  transition:
+    transform .25s ease,
+    background .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease;
+}
+
+.modal-close:hover{
+  transform:rotate(90deg) scale(1.05);
+  background:rgba(255,79,163,.13);
+  border-color:rgba(255,79,163,.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    0 12px 35px rgba(0,0,0,.3),
+    0 0 25px rgba(255,79,163,.12);
+}
+
+.detail-icon{
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    0 18px 50px rgba(0,0,0,.3),
+    0 0 35px rgba(255,79,163,.08);
+}
+
+.detail-category{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,79,163,.08);
+  border:1px solid rgba(255,79,163,.16);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+}
+
+.detail-description{
+  color:var(--text);
+  white-space:pre-line;
+}
+
+.detail-section{
+  position:relative;
+}
+
+.detail-section .section-kicker{
+  margin-bottom:14px;
+}
+
+.detail-screenshots{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:4px 2px 12px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  scroll-snap-type:x proximity;
+}
+
+.detail-screenshots::-webkit-scrollbar{
+  display:none;
+}
+
+.detail-screenshot{
+  position:relative;
+  flex:0 0 auto;
+  width:190px;
+  height:340px;
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.035);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 16px 45px rgba(0,0,0,.25);
+  cursor:zoom-in;
+  scroll-snap-align:start;
+  transition:
+    transform .3s cubic-bezier(.2,.8,.2,1),
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.detail-screenshot::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.10),
+      transparent 35%,
+      transparent 70%,
+      rgba(255,79,163,.08)
+    );
+  pointer-events:none;
+}
+
+.detail-screenshot:hover{
+  transform:translateY(-5px);
+  border-color:rgba(255,79,163,.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    0 22px 55px rgba(0,0,0,.32),
+    0 0 30px rgba(255,79,163,.08);
+}
+
+.detail-screenshot img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+.detail-screenshot:hover img{
+  transform:scale(1.025);
+}
+
+.detail-version-row{
+  position:relative;
+  padding:17px;
+  border-radius:19px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.055),
+      rgba(255,255,255,.025)
+    );
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.07);
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    background .25s ease;
+}
+
+.detail-version-row:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,79,163,.2);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,79,163,.07),
+      rgba(255,255,255,.025)
+    );
+}
+
+.detail-current-version{
+  display:inline-flex;
+  margin-left:7px;
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:700;
+  color:var(--pink);
+  background:rgba(255,79,163,.09);
+  border:1px solid rgba(255,79,163,.18);
+  vertical-align:middle;
+}
+
+.detail-info-item{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.055),
+      rgba(255,255,255,.025)
+    );
+  border-color:rgba(255,255,255,.09);
+  box-shadow:inset 0 1px rgba(255,255,255,.07);
+  transition:
+    transform .25s ease,
+    border-color .25s ease;
+}
+
+.detail-info-item:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,79,163,.18);
+}
+
+.detail-note{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,79,163,.07),
+      rgba(255,255,255,.025)
+    );
+  border-color:rgba(255,79,163,.14);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.08),
+    0 15px 45px rgba(0,0,0,.12);
+}
+
+/* =========================================================
+   Screenshot Viewer
+   ========================================================= */
+
+.screenshot-viewer{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:grid;
+  place-items:center;
+  padding:30px;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .3s ease,
+    visibility .3s ease;
+}
+
+.screenshot-viewer.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+.screenshot-viewer-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(28px) saturate(140%);
+  -webkit-backdrop-filter:blur(28px) saturate(140%);
+}
+
+.screenshot-viewer-image{
+  position:relative;
+  z-index:2;
+  display:block;
+  max-width:min(92vw,1100px);
+  max-height:90vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.55),
+    0 0 60px rgba(255,79,163,.08);
+  transform:scale(.94);
+  opacity:0;
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    opacity .3s ease;
+  cursor:zoom-out;
+}
+
+.screenshot-viewer.open .screenshot-viewer-image{
+  transform:scale(1);
+  opacity:1;
+}
+
+.screenshot-viewer-close{
+  position:absolute;
+  z-index:4;
+  top:22px;
+  right:22px;
+  width:46px;
+  height:46px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:var(--text);
+  font-size:28px;
+  line-height:1;
+  cursor:pointer;
+}
+
+@media(max-width:620px){
+
+  .app-detail{
+    max-height:calc(100vh - 20px);
+    padding:25px 17px;
+    border-radius:27px;
+  }
+
+  .detail-hero{
+    grid-template-columns:82px minmax(0,1fr);
+    gap:15px;
+    padding-right:35px;
+  }
+
+  .detail-icon{
+    width:82px;
+    height:82px;
+    border-radius:21px;
+  }
+
+  .detail-title{
+    font-size:30px;
+  }
+
+  .detail-category{
+    font-size:11px;
+    padding:5px 8px;
+    margin-bottom:6px;
+  }
+
+  .detail-meta{
+    font-size:12px;
+  }
+
+  .detail-actions{
+    margin-top:14px;
+  }
+
+  .detail-divider{
+    margin:28px 0;
+  }
+
+  .detail-section{
+    margin-top:27px;
+  }
+
+  .detail-screenshot{
+    width:155px;
+    height:277px;
+    border-radius:19px;
+  }
+
+  .screenshot-viewer{
+    padding:15px;
+  }
+
+  .screenshot-viewer-image{
+    max-width:96vw;
+    max-height:84vh;
+    border-radius:19px;
+  }
+
+  .screenshot-viewer-close{
+    top:14px;
+    right:14px;
+    width:42px;
+    height:42px;
+  }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .app-modal,
+  .app-modal .modal-backdrop,
+  .app-detail,
+  .modal-close,
+  .detail-screenshot,
+  .detail-screenshot img,
+  .detail-version-row,
+  .detail-info-item,
+  .screenshot-viewer,
+  .screenshot-viewer-image{
+    transition:none;
+  }
+
+}

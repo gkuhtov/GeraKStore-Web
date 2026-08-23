@@ -724,11 +724,76 @@ function openApp(id) {
 
   document.body.style.overflow = "hidden";
 
+  setupScreenshotViewer();
+
   history.replaceState(
     null,
     "",
     `${window.location.pathname}#app=${encodeURIComponent(id)}`
   );
+}
+
+function setupScreenshotViewer() {
+  const screenshots = document.querySelectorAll(".detail-screenshot img");
+
+  screenshots.forEach(image => {
+    if (image.dataset.viewerReady) return;
+
+    image.dataset.viewerReady = "true";
+    image.addEventListener("click", () => {
+      openScreenshotViewer(image.src, image.alt);
+    });
+  });
+}
+
+function openScreenshotViewer(src, alt) {
+  let viewer = document.querySelector("#screenshotViewer");
+
+  if (!viewer) {
+    viewer = document.createElement("div");
+    viewer.id = "screenshotViewer";
+    viewer.className = "screenshot-viewer";
+    viewer.innerHTML = `
+      <div class="screenshot-viewer-backdrop"></div>
+      <button
+        class="screenshot-viewer-close glass-chip"
+        type="button"
+        aria-label="Закрыть скриншот">
+        ×
+      </button>
+      <img class="screenshot-viewer-image" alt="">
+    `;
+
+    document.body.appendChild(viewer);
+
+    viewer.querySelector(".screenshot-viewer-backdrop")
+      .addEventListener("click", closeScreenshotViewer);
+
+    viewer.querySelector(".screenshot-viewer-close")
+      .addEventListener("click", closeScreenshotViewer);
+
+    viewer.addEventListener("click", event => {
+      if (event.target === viewer.querySelector(".screenshot-viewer-image")) {
+        closeScreenshotViewer();
+      }
+    });
+  }
+
+  const image = viewer.querySelector(".screenshot-viewer-image");
+  image.src = src;
+  image.alt = alt || "";
+
+  viewer.classList.add("open");
+  viewer.setAttribute("aria-hidden", "false");
+}
+
+function closeScreenshotViewer() {
+  const viewer = document.querySelector("#screenshotViewer");
+
+  if (!viewer) return;
+
+  viewer.classList.remove("open");
+  viewer.setAttribute("aria-hidden", "true");
 }
 
 function closeApp() {
@@ -750,6 +815,13 @@ function setupModal() {
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
+      const viewer = document.querySelector("#screenshotViewer");
+
+      if (viewer?.classList.contains("open")) {
+        closeScreenshotViewer();
+        return;
+      }
+
       closeApp();
     }
   });
