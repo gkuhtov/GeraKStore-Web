@@ -175,9 +175,6 @@ function appCard(app) {
             ${escapeHtml(app.name)}
           </div>
 
-          <div class="app-description">
-            ${escapeHtml(app.description)}
-          </div>
 
           <div class="app-meta">
             <span>v${escapeHtml(app.version)}</span>

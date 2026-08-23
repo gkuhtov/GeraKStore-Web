@@ -1981,3 +1981,13 @@ html[data-theme="light"] .detail-screenshot{
   }
 
 }
+
+/* Скрываем полосу прокрутки в окне приложения, прокрутка остаётся */
+.app-detail{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+.app-detail::-webkit-scrollbar{
+  display:none;
+}
