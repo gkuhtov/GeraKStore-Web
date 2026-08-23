@@ -280,23 +280,70 @@ function appCard(app) {
 
 function renderCatalog() {
   const apps = filteredApps();
+  const grid = $("#appGrid");
 
-  $("#appGrid").innerHTML = apps.length
-    ? apps.map(appCard).join("")
-    : `<div class="loading-card glass-panel">По этому запросу ничего не найдено.</div>`;
+  if (!apps.length) {
+    const query = state.query.trim();
 
-  document.querySelectorAll(".app-card").forEach(card => {
-    card.addEventListener("click", () => {
-      openApp(card.dataset.appId);
-    });
+    grid.innerHTML = `
+      <div class="catalog-empty glass-panel">
+        <div class="catalog-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 5 5"></path>
+            <path d="M8.5 11h5"></path>
+          </svg>
+        </div>
 
-    card.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openApp(card.dataset.appId);
-      }
-    });
-  });
+        <div class="catalog-empty-content">
+          <strong>
+            ${query ? "Ничего не найдено" : "В этой категории пока пусто"}
+          </strong>
+
+          <p>
+            ${
+              query
+                ? `По запросу «${escapeHtml(query)}» ничего не найдено. Попробуй изменить запрос или выбрать другую категорию.`
+                : "Попробуй выбрать другую категорию."
+            }
+          </p>
+
+          ${
+            query
+              ? `
+                <button class="glass-button catalog-empty-reset" type="button">
+                  Очистить поиск
+                </button>
+              `
+              : ""
+          }
+        </div>
+      </div>
+    `;
+
+    const reset = grid.querySelector(".catalog-empty-reset");
+
+    if (reset) {
+      reset.addEventListener("click", () => {
+        state.query = "";
+        $("#appSearch").value = "";
+        renderCatalog();
+        $("#appSearch").focus();
+      });
+    }
+
+    return;
+  }
+
+  grid.innerHTML = apps
+    .map((app, index) => `
+      <div
+        class="catalog-card-enter"
+        style="--catalog-index:${Math.min(index, 8)}">
+        ${appCard(app)}
+      </div>
+    `)
+    .join("");
 }
 
 function renderUpdates() {
