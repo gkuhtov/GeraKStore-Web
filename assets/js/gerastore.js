@@ -1,4 +1,4 @@
-const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraKStore/main/repo.json";
+const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 const LOCAL_APPS_URL = "data/apps.json";
 
 const state = {
@@ -289,7 +289,7 @@ function setupTheme() {
 function setupRepoCopy() {
   $("#copyRepo").addEventListener("click", async () => {
     const repo =
-      "https://raw.githubusercontent.com/gkuhtov/GeraKStore/main/repo.json";
+      "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 
     try {
       await navigator.clipboard.writeText(repo);
