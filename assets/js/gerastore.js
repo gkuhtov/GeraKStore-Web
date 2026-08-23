@@ -1,17 +1,3 @@
-/*
-  GeraStore Web
-  URL cleanup + repository catalog + adaptive hero video
-*/
-
-/* Убираем ?utm_source=... и другие параметры из адреса */
-if (window.location.search) {
-  window.history.replaceState(
-    {},
-    document.title,
-    window.location.pathname + window.location.hash
-  );
-}
-
 const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 const LOCAL_APPS_URL = "data/apps.json";
 
@@ -21,143 +7,71 @@ const state = {
   query: ""
 };
 
-const $ = (selector) => document.querySelector(selector);
+const $ = selector => document.querySelector(selector);
 
 const escapeHtml = (value = "") =>
-  String(value).replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  }[character]));
-
-/* ---------------------------------------------------------
-   APP DATA
---------------------------------------------------------- */
+  String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[char]));
 
 function normalizeApps(raw) {
   const list = Array.isArray(raw)
     ? raw
     : (raw?.apps || raw?.items || []);
 
-  return list.map((app, index) => ({
-    id:
-      app.bundleIdentifier ||
-      app.bundleID ||
-      app.identifier ||
-      `app-${index}`,
-
-    name:
-      app.name ||
-      app.title ||
-      "Без названия",
-
-    version:
-      app.version ||
-      app.versionName ||
-      app.appVersion ||
-      "—",
-
-    size:
-      app.size ||
-      app.fileSize ||
-      app.ipaSize ||
-      "—",
-
-    category:
-      app.category ||
-      app.genre ||
-      "Другое",
-
-    description:
-      app.description ||
-      "Приложение из GeraStore.",
-
-    icon:
-      app.iconURL ||
-      app.icon ||
-      app.iconUrl ||
-      "assets/images/gerastore-mark.svg",
-
-    download:
-      app.downloadURL ||
-      app.downloadUrl ||
-      app.url ||
-      "#",
-
-    updated:
-      app.updated ||
-      app.date ||
-      app.lastUpdated ||
-      "—",
-
-    ios:
-      app.minIOSVersion ||
-      app.ios ||
-      "—"
+  return list.map((a, i) => ({
+    id: a.bundleIdentifier || a.bundleID || a.identifier || `app-${i}`,
+    name: a.name || a.title || "Без названия",
+    version: a.version || a.versionName || a.appVersion || "—",
+    size: a.size || a.fileSize || a.ipaSize || "—",
+    category: a.category || a.genre || "Другое",
+    description: a.description || "Приложение из GeraStore.",
+    icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
+    download: a.downloadURL || a.downloadUrl || a.url || "#",
+    updated: a.updated || a.date || a.lastUpdated || "—",
+    ios: a.minIOSVersion || a.ios || "—"
   }));
 }
 
 async function loadApps() {
   try {
-    const repositoryResponse = await fetch(
-      REPO_URL,
-      { cache: "no-store" }
-    );
+    const repoResponse = await fetch(REPO_URL, {cache:"no-store"});
 
-    if (repositoryResponse.ok) {
-      const repository = await repositoryResponse.json();
+    if (repoResponse.ok) {
+      const repo = await repoResponse.json();
 
-      if (Array.isArray(repository.apps)) {
-        state.apps = normalizeApps(repository.apps);
-      } else if (repository.appsURL) {
-        const appsResponse = await fetch(
-          repository.appsURL,
-          { cache: "no-store" }
-        );
+      if (Array.isArray(repo.apps)) {
+        state.apps = normalizeApps(repo.apps);
+      } else if (repo.appsURL) {
+        const appsResponse = await fetch(repo.appsURL, {cache:"no-store"});
 
         if (appsResponse.ok) {
-          state.apps = normalizeApps(
-            await appsResponse.json()
-          );
+          state.apps = normalizeApps(await appsResponse.json());
         }
       }
     }
-  } catch (error) {
-    console.warn(
-      "GeraStore remote repository unavailable:",
-      error
-    );
+  } catch(error) {
+    console.warn("Не удалось загрузить удалённый каталог.", error);
   }
 
-  /* Локальный fallback */
   if (!state.apps.length) {
     try {
-      const localResponse = await fetch(
-        LOCAL_APPS_URL,
-        { cache: "no-store" }
-      );
+      const localResponse = await fetch(LOCAL_APPS_URL, {cache:"no-store"});
 
       if (localResponse.ok) {
-        state.apps = normalizeApps(
-          await localResponse.json()
-        );
+        state.apps = normalizeApps(await localResponse.json());
       }
-    } catch (error) {
-      console.warn(
-        "Local apps database unavailable:",
-        error
-      );
+    } catch(error) {
+      console.warn("Не удалось загрузить локальный каталог.", error);
     }
   }
 
   renderAll();
 }
-
-/* ---------------------------------------------------------
-   CATEGORIES
---------------------------------------------------------- */
 
 function categories() {
   return [
@@ -171,230 +85,130 @@ function categories() {
 }
 
 function renderFilters() {
-  const container = $("#categoryFilters");
-
-  if (!container) return;
-
-  container.innerHTML = categories()
+  $("#categoryFilters").innerHTML = categories()
     .map(category => `
       <button
-        class="filter ${
-          category === state.category ? "active" : ""
-        }"
-        data-category="${escapeHtml(category)}"
-      >
+        class="filter ${category === state.category ? "active" : ""}"
+        data-category="${escapeHtml(category)}">
         ${escapeHtml(category)}
       </button>
     `)
     .join("");
 
-  container
-    .querySelectorAll(".filter")
-    .forEach(button => {
-      button.addEventListener("click", () => {
-        state.category = button.dataset.category;
-        renderAll();
-      });
+  document.querySelectorAll(".filter").forEach(button => {
+    button.addEventListener("click", () => {
+      state.category = button.dataset.category;
+      renderAll();
     });
-}
-
-/* ---------------------------------------------------------
-   SEARCH
---------------------------------------------------------- */
-
-function filteredApps() {
-  const query = state.query
-    .trim()
-    .toLowerCase();
-
-  return state.apps.filter(app => {
-    const categoryMatches =
-      state.category === "Все" ||
-      app.category === state.category;
-
-    const searchableText =
-      `${app.name} ${app.id} ${app.description}`
-        .toLowerCase();
-
-    return (
-      categoryMatches &&
-      (!query || searchableText.includes(query))
-    );
   });
 }
 
-/* ---------------------------------------------------------
-   APP CARDS
---------------------------------------------------------- */
+function filteredApps() {
+  const query = state.query.trim().toLowerCase();
+
+  return state.apps.filter(app => {
+    const category =
+      state.category === "Все" ||
+      app.category === state.category;
+
+    const text =
+      `${app.name} ${app.id} ${app.description}`
+        .toLowerCase();
+
+    return category && (!query || text.includes(query));
+  });
+}
 
 function appCard(app) {
   return `
-    <article class="app-card glass-panel">
+    <article
+      class="app-card glass-panel"
+      data-app-id="${escapeHtml(app.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="Открыть ${escapeHtml(app.name)}">
 
-      <div>
+      <div class="app-top">
+        <img
+          class="app-icon"
+          src="${escapeHtml(app.icon)}"
+          alt=""
+          loading="lazy"
+          onerror="this.src='assets/images/gerastore-mark.svg'">
 
-        <div class="app-top">
-
-          <img
-            class="app-icon"
-            src="${escapeHtml(app.icon)}"
-            alt=""
-            loading="lazy"
-            onerror="this.src='assets/images/gerastore-mark.svg'"
-          >
-
-          <div>
-
-            <div class="app-title">
-              ${escapeHtml(app.name)}
-            </div>
-
-            <div class="app-meta">
-              v${escapeHtml(app.version)}
-              ·
-              ${escapeHtml(app.ios)}
-            </div>
-
+        <div>
+          <div class="app-title">${escapeHtml(app.name)}</div>
+          <div class="app-meta">
+            v${escapeHtml(app.version)} · iOS ${escapeHtml(app.ios)}
           </div>
-
         </div>
-
-        <p class="app-desc">
-          ${escapeHtml(app.description)}
-        </p>
-
       </div>
 
-      <div class="app-bottom">
+      <div class="app-card-bottom">
+        <span class="app-category">
+          ${escapeHtml(app.category)}
+        </span>
 
-        <div class="app-tags">
-
-          <span class="tag">
-            ${escapeHtml(app.category)}
-          </span>
-
-          <span class="tag">
-            ${escapeHtml(app.size)}
-          </span>
-
-        </div>
-
-        ${
-          app.download !== "#"
-            ? `
-              <a
-                class="app-link"
-                href="${escapeHtml(app.download)}"
-                target="_blank"
-                rel="noopener"
-              >
-                Открыть
-              </a>
-            `
-            : `
-              <span class="tag">
-                Ссылка появится
-              </span>
-            `
-        }
-
+        <span class="app-arrow">›</span>
       </div>
-
     </article>
   `;
 }
 
 function renderCatalog() {
-  const container = $("#appGrid");
-
-  if (!container) return;
-
   const apps = filteredApps();
 
-  container.innerHTML = apps.length
+  $("#appGrid").innerHTML = apps.length
     ? apps.map(appCard).join("")
-    : `
-      <div class="loading-card glass-panel">
-        По этому запросу ничего не найдено.
-      </div>
-    `;
+    : `<div class="loading-card glass-panel">По этому запросу ничего не найдено.</div>`;
+
+  document.querySelectorAll(".app-card").forEach(card => {
+    card.addEventListener("click", () => {
+      openApp(card.dataset.appId);
+    });
+
+    card.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openApp(card.dataset.appId);
+      }
+    });
+  });
 }
 
-/* ---------------------------------------------------------
-   UPDATES
---------------------------------------------------------- */
-
 function renderUpdates() {
-  const container = $("#updatesGrid");
-
-  if (!container) return;
-
   const apps = [...state.apps]
     .sort((a, b) =>
-      String(b.updated).localeCompare(
-        String(a.updated)
-      )
+      String(b.updated).localeCompare(String(a.updated))
     )
     .slice(0, 6);
 
-  container.innerHTML = apps.length
+  $("#updatesGrid").innerHTML = apps.length
     ? apps.map(app => `
       <article class="update-card glass-panel">
-
         <div>
-
-          <strong>
-            ${escapeHtml(app.name)}
-          </strong>
-
-          <span>
-            ${escapeHtml(app.updated)}
-          </span>
-
+          <strong>${escapeHtml(app.name)}</strong>
+          <span>${escapeHtml(app.updated)}</span>
         </div>
 
         <span class="update-version">
           v${escapeHtml(app.version)}
         </span>
-
       </article>
     `).join("")
-    : `
-      <div class="loading-card glass-panel">
-        Данные об обновлениях появятся после
-        подключения каталога.
-      </div>
-    `;
+    : `<div class="loading-card glass-panel">
+        Данные об обновлениях появятся после подключения каталога.
+      </div>`;
 }
 
-/* ---------------------------------------------------------
-   STATISTICS
---------------------------------------------------------- */
-
 function renderStats() {
-  const apps = $("[data-stat='apps']");
-  const categoriesElement =
-    $("[data-stat='categories']");
-  const versions =
-    $("[data-stat='versions']");
+  $("[data-stat='apps']").textContent = state.apps.length;
 
-  if (apps) {
-    apps.textContent = state.apps.length;
-  }
+  $("[data-stat='categories']").textContent =
+    categories().filter(value => value !== "Все").length;
 
-  if (categoriesElement) {
-    categoriesElement.textContent =
-      categories()
-        .filter(category => category !== "Все")
-        .length;
-  }
-
-  if (versions) {
-    versions.textContent =
-      new Set(
-        state.apps.map(app => app.version)
-      ).size;
-  }
+  $("[data-stat='versions']").textContent =
+    new Set(state.apps.map(app => app.version)).size;
 }
 
 function renderAll() {
@@ -404,233 +218,288 @@ function renderAll() {
   renderStats();
 }
 
-/* ---------------------------------------------------------
-   SEARCH SETUP
---------------------------------------------------------- */
-
 function setupSearch() {
-  const input = $("#appSearch");
-
-  if (!input) return;
-
-  input.addEventListener("input", event => {
+  $("#appSearch").addEventListener("input", event => {
     state.query = event.target.value;
     renderCatalog();
   });
 }
 
-/* ---------------------------------------------------------
-   REPOSITORY COPY
---------------------------------------------------------- */
+/* ---------------- THEME ---------------- */
+
+function getInitialTheme() {
+  const saved = localStorage.getItem("gerastore-theme");
+
+  if (saved === "light" || saved === "dark") {
+    return saved;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+
+  const icon = $("#themeIcon");
+
+  if (icon) {
+    icon.textContent = theme === "light" ? "☀" : "☾";
+  }
+
+  localStorage.setItem("gerastore-theme", theme);
+}
+
+function setupTheme() {
+  applyTheme(getInitialTheme());
+
+  $("#themeToggle").addEventListener("click", () => {
+    const current =
+      document.documentElement.dataset.theme || "dark";
+
+    applyTheme(current === "dark" ? "light" : "dark");
+  });
+}
+
+/* ---------------- REPO COPY ---------------- */
 
 function setupRepoCopy() {
-  const button = $("#copyRepo");
-  const status = $("#copyStatus");
-
-  if (!button) return;
-
-  button.addEventListener("click", async () => {
-
-    const repoUrl =
+  $("#copyRepo").addEventListener("click", async () => {
+    const repo =
       "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
 
     try {
-
-      await navigator.clipboard.writeText(
-        repoUrl
-      );
-
-      if (status) {
-        status.textContent =
-          "Ссылка на репозиторий скопирована.";
-      }
-
-    } catch (error) {
-
-      if (status) {
-        status.textContent =
-          "Скопируй ссылку вручную: " +
-          repoUrl;
-      }
-
+      await navigator.clipboard.writeText(repo);
+      $("#copyStatus").textContent =
+        "Ссылка на репозиторий скопирована.";
+    } catch(error) {
+      $("#copyStatus").textContent =
+        "Скопируй ссылку вручную: " + repo;
     }
   });
 }
 
-/* ---------------------------------------------------------
-   HERO VIDEO
---------------------------------------------------------- */
+/* ---------------- APP DETAIL ---------------- */
+
+function openApp(id) {
+  const app = state.apps.find(item => item.id === id);
+
+  if (!app) return;
+
+  const content = $("#appDetailContent");
+
+  content.innerHTML = `
+    <div class="detail-head">
+      <img
+        class="detail-icon"
+        src="${escapeHtml(app.icon)}"
+        alt=""
+        onerror="this.src='assets/images/gerastore-mark.svg'">
+
+      <div>
+        <h2 class="detail-title">
+          ${escapeHtml(app.name)}
+        </h2>
+
+        <div class="detail-subtitle">
+          v${escapeHtml(app.version)}
+          · ${escapeHtml(app.category)}
+        </div>
+      </div>
+    </div>
+
+    <p class="detail-description">
+      ${escapeHtml(app.description)}
+    </p>
+
+    <div class="detail-info">
+
+      <div class="detail-info-item">
+        <span>Bundle ID</span>
+        <strong>${escapeHtml(app.id)}</strong>
+      </div>
+
+      <div class="detail-info-item">
+        <span>Версия</span>
+        <strong>${escapeHtml(app.version)}</strong>
+      </div>
+
+      <div class="detail-info-item">
+        <span>Минимальная iOS</span>
+        <strong>${escapeHtml(app.ios)}</strong>
+      </div>
+
+      <div class="detail-info-item">
+        <span>Размер IPA</span>
+        <strong>${escapeHtml(app.size)}</strong>
+      </div>
+
+      <div class="detail-info-item">
+        <span>Категория</span>
+        <strong>${escapeHtml(app.category)}</strong>
+      </div>
+
+      <div class="detail-info-item">
+        <span>Обновлено</span>
+        <strong>${escapeHtml(app.updated)}</strong>
+      </div>
+
+    </div>
+
+    <div class="detail-actions">
+      ${
+        app.download !== "#"
+          ? `
+            <a
+              class="liquid-button liquid-button-primary"
+              href="${escapeHtml(app.download)}"
+              target="_blank"
+              rel="noopener">
+              Скачать IPA
+            </a>
+          `
+          : `
+            <span class="glass-button">
+              Ссылка появится позже
+            </span>
+          `
+      }
+    </div>
+  `;
+
+  $("#appModal").classList.add("open");
+  $("#appModal").setAttribute("aria-hidden", "false");
+
+  document.body.style.overflow = "hidden";
+
+  history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}#app=${encodeURIComponent(id)}`
+  );
+}
+
+function closeApp() {
+  $("#appModal").classList.remove("open");
+  $("#appModal").setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+
+  history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}${window.location.search}`
+  );
+}
+
+function setupModal() {
+  $("#modalClose").addEventListener("click", closeApp);
+  $("#modalBackdrop").addEventListener("click", closeApp);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeApp();
+    }
+  });
+}
+
+function openHashApp() {
+  const hash = window.location.hash;
+
+  if (!hash.startsWith("#app=")) return;
+
+  const id = decodeURIComponent(
+    hash.substring(5)
+  );
+
+  if (state.apps.length) {
+    openApp(id);
+  }
+}
+
+/* ---------------- HERO VIDEO ---------------- */
 
 function setupHeroVideo() {
   const video = $("#heroVideo");
   const status = $("#mediaStatus");
-  const poster =
-    document.querySelector(".hero-poster");
 
   if (!video) return;
 
-  const setStatus = text => {
-    if (status) {
-      status.textContent = text;
+  let timeout = setTimeout(() => {
+    if (!video.classList.contains("is-ready")) {
+      status.textContent = "Оптимальный режим";
     }
-  };
+  }, 4500);
 
-  const usePoster = text => {
-
-    video.classList.remove("is-ready");
-
-    if (poster) {
-      poster.style.opacity = "1";
-    }
-
-    setStatus(text);
-  };
-
-  const useVideo = () => {
-
-    if (poster) {
-      poster.style.opacity = "0";
-    }
+  video.addEventListener("canplay", () => {
+    clearTimeout(timeout);
 
     video.classList.add("is-ready");
+    status.textContent = "Live visual";
+  }, {once:true});
 
-    setStatus("Live visual");
-  };
+  video.addEventListener("error", () => {
+    clearTimeout(timeout);
 
-  /* Экономия трафика */
-  if (
-    navigator.connection &&
-    navigator.connection.saveData
-  ) {
+    status.textContent = "Статичный режим";
+  }, {once:true});
 
-    video.pause();
+  if (navigator.connection?.saveData) {
     video.removeAttribute("src");
-    video.load();
+    video.style.display = "none";
+    status.textContent = "Экономия трафика";
+  }
+}
 
-    usePoster("Экономия трафика");
+/* ---------------- URL CLEANUP ---------------- */
 
-    return;
+function cleanTrackingParameters() {
+  if (!window.location.search) return;
+
+  const params = new URLSearchParams(window.location.search);
+
+  const trackingPrefixes = [
+    "utm_",
+    "fbclid",
+    "gclid",
+    "yclid",
+    "mc_cid",
+    "mc_eid"
+  ];
+
+  let hasTracking = false;
+
+  for (const key of params.keys()) {
+    if (
+      trackingPrefixes.some(prefix =>
+        key === prefix ||
+        key.startsWith(prefix)
+      )
+    ) {
+      hasTracking = true;
+    }
   }
 
-  /* Reduced Data */
-  if (
-    window.matchMedia &&
-    window.matchMedia(
-      "(prefers-reduced-data: reduce)"
-    ).matches
-  ) {
+  if (!hasTracking) return;
 
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-
-    usePoster("Статичный режим");
-
-    return;
-  }
-
-  /* Очень медленное соединение */
-  const connection =
-    navigator.connection;
-
-  if (
-    connection &&
-    (
-      connection.effectiveType === "slow-2g" ||
-      connection.effectiveType === "2g"
-    )
-  ) {
-
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-
-    usePoster("Статичный режим");
-
-    return;
-  }
-
-  /* Используем оптимизированное видео */
-  video.src =
-    "assets/video/background-web.mp4";
-
-  video.load();
-
-  let videoReady = false;
-
-  const timeout = setTimeout(() => {
-
-    if (!videoReady) {
-      usePoster("Статичный режим");
-    }
-
-  }, 8000);
-
-  video.addEventListener(
-    "canplay",
-    () => {
-
-      videoReady = true;
-
-      clearTimeout(timeout);
-
-      useVideo();
-
-      video.play().catch(() => {
-        usePoster("Статичный режим");
-      });
-
-    },
-    { once: true }
-  );
-
-  video.addEventListener(
-    "error",
-    () => {
-
-      clearTimeout(timeout);
-
-      usePoster("Статичный режим");
-
-    },
-    { once: true }
-  );
-
-  video.addEventListener(
-    "stalled",
-    () => {
-
-      if (!videoReady) {
-        usePoster("Статичный режим");
-      }
-
-    }
-  );
-
-  video.addEventListener(
-    "abort",
-    () => {
-
-      if (!videoReady) {
-        usePoster("Статичный режим");
-      }
-
-    }
+  window.history.replaceState(
+    {},
+    document.title,
+    window.location.pathname + window.location.hash
   );
 }
 
-/* ---------------------------------------------------------
-   START
---------------------------------------------------------- */
+/* ---------------- INIT ---------------- */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+document.addEventListener("DOMContentLoaded", () => {
+  cleanTrackingParameters();
+  setupTheme();
+  setupSearch();
+  setupRepoCopy();
+  setupModal();
+  setupHeroVideo();
+  loadApps();
+});
 
-    setupSearch();
-    setupRepoCopy();
-    setupHeroVideo();
-    loadApps();
-
-  }
-);
+window.addEventListener("hashchange", openHashApp);
