@@ -124,6 +124,7 @@ async function loadApps() {
                 version: version.version || version.versionName || "—",
                 date: version.date || version.versionDate || "—",
                 size: version.size || version.fileSize || version.ipaSize || "",
+                minIOSVersion: version.minIOSVersion || version.minimumIOSVersion || version.ios || "",
                 download: version.downloadURL || version.downloadUrl || version.url || "#"
               }))
             : [];
