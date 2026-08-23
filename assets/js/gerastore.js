@@ -30,6 +30,24 @@ function formatSize(value) {
   return `${mb.toFixed(1)} MB`;
 }
 
+function formatRussianDate(value) {
+  if (!value || value === "—") {
+    return "—";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
 function normalizeApps(raw) {
   const list = Array.isArray(raw)
     ? raw
@@ -245,7 +263,7 @@ function renderUpdates() {
       <article class="update-card glass-panel">
         <div>
           <strong>${escapeHtml(app.name)}</strong>
-          <span>${escapeHtml(app.updated)}</span>
+          <span>${escapeHtml(formatRussianDate(app.updated))}</span>
         </div>
 
         <span class="update-version">
@@ -496,7 +514,7 @@ function openApp(id) {
                     </div>
 
                     <div class="detail-version-date">
-                      ${escapeHtml(version.date)}
+                      ${escapeHtml(formatRussianDate(version.date))}
                       ${version.size ? ` · ${escapeHtml(version.size)}` : ""}
                     </div>
                   </div>
@@ -560,7 +578,7 @@ function openApp(id) {
 
         <div class="detail-info-item">
           <span>Обновлено</span>
-          <strong>${escapeHtml(app.updated)}</strong>
+          <strong>${escapeHtml(formatRussianDate(app.updated))}</strong>
         </div>
 
       </div>
