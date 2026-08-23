@@ -18,6 +18,18 @@ const escapeHtml = (value = "") =>
     "'":"&#039;"
   }[char]));
 
+function formatSize(value) {
+  const bytes = Number(value);
+
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "—";
+  }
+
+  const mb = bytes / 1024 / 1024;
+
+  return `${mb.toFixed(1)} MB`;
+}
+
 function normalizeApps(raw) {
   const list = Array.isArray(raw)
     ? raw
@@ -32,7 +44,7 @@ function normalizeApps(raw) {
       a.author ||
       "Неизвестный разработчик",
     version: a.version || a.versionName || a.appVersion || "—",
-    size: a.size || a.fileSize || a.ipaSize || "—",
+    size: formatSize(a.size || a.fileSize || a.ipaSize),
     category: a.category || a.genre || "Другое",
     description:
       a.localizedDescription ||
@@ -46,7 +58,7 @@ function normalizeApps(raw) {
           ? a.screenshotURLs
           : [],
     download: a.downloadURL || a.downloadUrl || a.url || "#",
-    updated: a.updated || a.date || a.lastUpdated || "—",
+    updated: a.versionDate || a.updated || a.date || a.lastUpdated || "—",
     ios: a.minIOSVersion || a.ios || "—",
     whatsNew:
       a.whatsNew ||
