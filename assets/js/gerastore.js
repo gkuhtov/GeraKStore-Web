@@ -77,7 +77,7 @@ function normalizeApps(raw) {
           : [],
     download: a.downloadURL || a.downloadUrl || a.url || "#",
     updated: a.versionDate || a.updated || a.date || a.lastUpdated || "—",
-    ios: a.minIOSVersion || a.ios || "—",
+    ios: a.minIOSVersion || a.ios || (a.versions?.length ? a.versions[a.versions.length-1].minIOSVersion : "") || "—",
     whatsNew:
       a.whatsNew ||
       a.whatIsNew ||
@@ -149,7 +149,7 @@ async function loadApps() {
             screenshots: Array.isArray(app.screenshots) ? app.screenshots : Array.isArray(app.screenshotURLs) ? app.screenshotURLs : [],
             download: app.appPackage || app.downloadURL || app.downloadUrl || app.url || latest.download || "#",
             updated: app.appUpdateTime || app.versionDate || app.updated || app.date || "—",
-            ios: app.minIOSVersion || app.minimumIOSVersion || app.ios || "—",
+            ios: app.minIOSVersion || app.minimumIOSVersion || app.ios || latest.minIOSVersion || "—",
             whatsNew: app.whatsNew || app.whatIsNew || app.changelog || app.releaseNotes || app.notes || "",
             versions: versions
           };
