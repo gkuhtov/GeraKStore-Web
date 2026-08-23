@@ -282,6 +282,8 @@ function renderCatalog() {
   const apps = filteredApps();
   const grid = $("#appGrid");
 
+  updateCatalogStatus(apps.length);
+
   if (!apps.length) {
     const query = state.query.trim();
 
@@ -344,6 +346,28 @@ function renderCatalog() {
       </div>
     `)
     .join("");
+
+  grid.querySelectorAll(".app-card").forEach(card => {
+    const open = () => {
+      const id = card.dataset.appId;
+
+      if (!id) {
+        console.warn("У карточки отсутствует data-app-id");
+        return;
+      }
+
+      openApp(id);
+    };
+
+    card.addEventListener("click", open);
+
+    card.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
 }
 
 function renderUpdates() {
@@ -418,10 +442,61 @@ function renderAll() {
 }
 
 function setupSearch() {
-  $("#appSearch").addEventListener("input", event => {
+  const input = $("#appSearch");
+  const clear = $("#searchClear");
+  const sort = $("#appSort");
+
+  input.addEventListener("input", event => {
     state.query = event.target.value;
     renderCatalog();
   });
+
+  if (clear) {
+    clear.addEventListener("click", () => {
+      state.query = "";
+      input.value = "";
+      renderCatalog();
+      input.focus();
+    });
+  }
+
+  if (sort) {
+    sort.value = state.sort;
+
+    sort.addEventListener("change", event => {
+      state.sort = event.target.value;
+      renderCatalog();
+    });
+  }
+}
+
+function updateCatalogStatus(count) {
+  const countElement = $("#catalogCount");
+  const contextElement = $("#catalogContext");
+
+  if (countElement) {
+    const lastTwo = count % 100;
+    const lastOne = count % 10;
+
+    let word = "приложений";
+
+    if (lastTwo >= 11 && lastTwo <= 19) {
+      word = "приложений";
+    } else if (lastOne === 1) {
+      word = "приложение";
+    } else if (lastOne >= 2 && lastOne <= 4) {
+      word = "приложения";
+    }
+
+    countElement.textContent = `${count} ${word}`;
+  }
+
+  if (contextElement) {
+    contextElement.textContent =
+      state.category === "Все"
+        ? "Все приложения"
+        : state.category;
+  }
 }
 
 /* ---------------- THEME ---------------- */
@@ -493,6 +568,8 @@ function setupAppCardAnimation() {
 
     if (!card) return;
 
+    const id = card.dataset.appId;
+
     document.querySelectorAll(".app-card.is-selected").forEach(item => {
       if (item !== card) {
         item.classList.remove("is-selected");
@@ -508,6 +585,26 @@ function setupAppCardAnimation() {
     setTimeout(() => {
       card.classList.remove("selecting");
     }, 400);
+
+    if (id) {
+      openApp(id);
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    const card = event.target.closest(".app-card");
+
+    if (!card) return;
+
+    event.preventDefault();
+
+    const id = card.dataset.appId;
+
+    if (id) {
+      openApp(id);
+    }
   });
 }
 

@@ -212,17 +212,46 @@
           <h2>Найди приложение.</h2>
         </div>
 
-        <div class="search-wrap glass-panel">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m21 21-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"/>
-          </svg>
+        <div class="catalog-tools">
 
-          <input
-            id="appSearch"
-            type="search"
-            placeholder="Название, Bundle ID..."
-            autocomplete="off">
+          <div class="search-wrap glass-panel">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m21 21-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0Z"/>
+            </svg>
+
+            <input
+              id="appSearch"
+              type="search"
+              placeholder="Название, разработчик, Bundle ID..."
+              autocomplete="off">
+
+            <button
+              class="search-clear"
+              id="searchClear"
+              type="button"
+              aria-label="Очистить поиск">
+              ×
+            </button>
+          </div>
+
+          <label class="sort-wrap glass-panel">
+            <span>Сортировка</span>
+
+            <select id="appSort">
+              <option value="newest">Сначала новые</option>
+              <option value="name">По названию</option>
+              <option value="size">По размеру</option>
+              <option value="version">По версии</option>
+            </select>
+          </label>
+
         </div>
+      </div>
+
+      <div class="catalog-status">
+        <span id="catalogCount">0 приложений</span>
+        <span class="catalog-status-dot">·</span>
+        <span id="catalogContext">Все приложения</span>
       </div>
 
       <div class="filter-row" id="categoryFilters"></div>

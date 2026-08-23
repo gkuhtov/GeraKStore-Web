@@ -3819,3 +3819,141 @@ html[data-theme="light"] .app-card.is-selected{
     transition:none;
   }
 }
+
+/* =========================================================
+   Smart catalog controls
+   ========================================================= */
+
+.catalog-tools{
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  min-width:min(100%, 650px);
+}
+
+.search-wrap{
+  flex:1 1 auto;
+  min-width:280px;
+  position:relative;
+}
+
+.search-wrap input{
+  padding-right:42px;
+}
+
+.search-clear{
+  position:absolute;
+  right:10px;
+  top:50%;
+  width:30px;
+  height:30px;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:var(--muted);
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  opacity:.65;
+  transition:
+    opacity .2s ease,
+    background .2s ease,
+    color .2s ease;
+}
+
+.search-clear:hover{
+  opacity:1;
+  color:var(--text);
+  background:var(--surface);
+}
+
+.sort-wrap{
+  width:185px;
+  min-width:185px;
+  padding:9px 13px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+  border-radius:18px;
+}
+
+.sort-wrap span{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.sort-wrap select{
+  width:100%;
+  border:0;
+  outline:0;
+  padding:0;
+  background:transparent;
+  color:var(--text);
+  font:inherit;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.sort-wrap select option{
+  color:#111;
+  background:#fff;
+}
+
+.catalog-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 12px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+#catalogCount{
+  color:var(--text);
+  font-weight:700;
+}
+
+.catalog-status-dot{
+  opacity:.45;
+}
+
+@media(max-width:900px){
+  .catalog-tools{
+    width:100%;
+    min-width:0;
+  }
+
+  .sort-wrap{
+    width:170px;
+    min-width:170px;
+  }
+}
+
+@media(max-width:620px){
+  .catalog-tools{
+    flex-direction:column;
+    gap:9px;
+  }
+
+  .search-wrap{
+    width:100%;
+    min-width:0;
+  }
+
+  .sort-wrap{
+    width:100%;
+    min-width:0;
+    min-height:55px;
+  }
+
+  .catalog-status{
+    margin-top:2px;
+  }
+}
