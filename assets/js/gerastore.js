@@ -34,7 +34,10 @@ function normalizeApps(raw) {
     version: a.version || a.versionName || a.appVersion || "—",
     size: a.size || a.fileSize || a.ipaSize || "—",
     category: a.category || a.genre || "Другое",
-    description: a.description || "Приложение из GeraKStore.",
+    description:
+      a.localizedDescription ||
+      a.description ||
+      "Приложение из GeraKStore.",
     icon: a.iconURL || a.icon || a.iconUrl || "assets/images/gerastore-mark.svg",
     screenshots:
       Array.isArray(a.screenshots)
