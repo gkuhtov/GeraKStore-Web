@@ -107,7 +107,54 @@ async function loadApps() {
     if (repoResponse.ok) {
       const repo = await repoResponse.json();
 
-      if (Array.isArray(repo.apps)) {
+      if (Array.isArray(repo.appRepositories)) {
+        const categories = Array.isArray(repo.appCategories) ? repo.appCategories : [];
+
+        state.apps = repo.appRepositories.map((app, index) => {
+          const categoryIndex = Number(app.appCateIndex);
+
+          const category =
+            app.category ||
+            (Number.isInteger(categoryIndex) && categories[categoryIndex]
+              ? categories[categoryIndex]
+              : "Другое");
+
+          const versions = Array.isArray(app.versions)
+            ? app.versions.map(version => ({
+                version: version.version || version.versionName || "—",
+                date: version.date || version.versionDate || "—",
+                size: version.size || version.fileSize || version.ipaSize || "",
+                download: version.downloadURL || version.downloadUrl || version.url || "#"
+              }))
+            : [];
+
+          const latest = versions.length ? versions[versions.length - 1] : {};
+
+          const rawSize =
+            app.appSize ||
+            app.size ||
+            app.fileSize ||
+            latest.size ||
+            0;
+
+          return {
+            id: app.bundleIdentifier || app.bundleID || app.identifier || "app-" + index,
+            name: app.appName || app.name || app.title || "Без названия",
+            developer: app.developerName || app.developer || app.author || "Неизвестный разработчик",
+            version: app.appVersion || app.version || latest.version || "—",
+            size: formatSize(rawSize),
+            category: category,
+            description: app.appDescription || app.localizedDescription || app.description || "Приложение из GeraKStore.",
+            icon: app.appImage || app.iconURL || app.icon || app.iconUrl || "assets/images/gerastore-mark.svg",
+            screenshots: Array.isArray(app.screenshots) ? app.screenshots : Array.isArray(app.screenshotURLs) ? app.screenshotURLs : [],
+            download: app.appPackage || app.downloadURL || app.downloadUrl || app.url || latest.download || "#",
+            updated: app.appUpdateTime || app.versionDate || app.updated || app.date || "—",
+            ios: app.minIOSVersion || app.minimumIOSVersion || app.ios || "—",
+            whatsNew: app.whatsNew || app.whatIsNew || app.changelog || app.releaseNotes || app.notes || "",
+            versions: versions
+          };
+        });
+      } else if (Array.isArray(repo.apps)) {
         state.apps = normalizeApps(repo.apps);
       } else if (repo.appsURL) {
         const appsResponse = await fetch(repo.appsURL, {cache:"no-store"});
