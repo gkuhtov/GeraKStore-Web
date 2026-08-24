@@ -779,6 +779,8 @@ function lockPageScroll() {
 }
 
 function unlockPageScroll() {
+  const restoreScrollY = lockedPageScrollY;
+
   pageScrollLocked = false;
 
   window.removeEventListener("wheel", blockBackgroundScroll, true);
@@ -804,7 +806,11 @@ function unlockPageScroll() {
   document.body.style.overflow = "";
   document.body.style.height = "";
 
-  window.scrollTo(0, lockedPageScrollY);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo(0, restoreScrollY);
+    });
+  });
 }
 
 function openApp(id) {
