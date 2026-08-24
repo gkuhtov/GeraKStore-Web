@@ -902,6 +902,16 @@ function openApp(id) {
   $("#appModal").classList.add("open");
   $("#appModal").setAttribute("aria-hidden", "false");
 
+  console.log("[SCROLL TEST]", {
+    windowScrollY: window.scrollY,
+    documentScrollTop: document.documentElement.scrollTop,
+    bodyScrollTop: document.body.scrollTop,
+    modalScrollTop: document.querySelector("#appModal")?.scrollTop,
+    detailScrollTop: document.querySelector("#appModal .app-detail")?.scrollTop,
+    modalRectTop: document.querySelector("#appModal")?.getBoundingClientRect().top,
+    detailRectTop: document.querySelector("#appModal .app-detail")?.getBoundingClientRect().top
+  });
+
   setTimeout(() => {
     const modal = document.querySelector("#appModal");
     const detail = document.querySelector("#appModal .app-detail");
