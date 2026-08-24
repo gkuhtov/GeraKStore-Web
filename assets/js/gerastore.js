@@ -903,7 +903,7 @@ function openApp(id) {
   $("#appModal").setAttribute("aria-hidden", "false");
 
   setTimeout(() => {
-    console.log("[GeraKStore] SCROLL DIAGNOSTIC");
+    let output = "";
 
     document.querySelectorAll("*").forEach(el => {
       const style = getComputedStyle(el);
@@ -915,18 +915,60 @@ function openApp(id) {
           style.overflowY === "scroll"
         )
       ) {
-        console.log(
-          "[SCROLL]",
-          el.tagName,
-          "#" + (el.id || ""),
-          "." + (el.className || ""),
-          "scrollTop=" + el.scrollTop,
-          "clientHeight=" + el.clientHeight,
-          "scrollHeight=" + el.scrollHeight
-        );
+        output +=
+          el.tagName +
+          " #" + (el.id || "-") +
+          " ." + (typeof el.className === "string" ? el.className : "-") +
+          " | scrollTop=" + el.scrollTop +
+          " | client=" + el.clientHeight +
+          " | scroll=" + el.scrollHeight +
+          "\n";
       }
     });
+
+    let diagnostic = document.querySelector("#geraScrollDiagnostic");
+
+    if (!diagnostic) {
+      diagnostic = document.createElement("pre");
+      diagnostic.id = "geraScrollDiagnostic";
+
+      Object.assign(diagnostic.style, {
+        position: "fixed",
+        left: "8px",
+        right: "8px",
+        bottom: "8px",
+        maxHeight: "45vh",
+        overflow: "auto",
+        zIndex: "2147483647",
+        padding: "12px",
+        margin: "0",
+        borderRadius: "14px",
+        background: "rgba(0,0,0,.9)",
+        color: "#00ff88",
+        fontSize: "11px",
+        lineHeight: "1.4",
+        whiteSpace: "pre-wrap"
+      });
+
+      document.body.appendChild(diagnostic);
+    }
+
+    diagnostic.textContent =
+      "SCROLL DIAGNOSTIC\n\n" +
+      output +
+      "\nAPP DETAIL:\n" +
+      (
+        document.querySelector("#appModal .app-detail")
+          ? "scrollTop=" +
+            document.querySelector("#appModal .app-detail").scrollTop +
+            "\nclientHeight=" +
+            document.querySelector("#appModal .app-detail").clientHeight +
+            "\nscrollHeight=" +
+            document.querySelector("#appModal .app-detail").scrollHeight
+          : "NOT FOUND"
+      );
   }, 100);
+
 
   setTimeout(() => {
     console.log("[GeraKStore] SCROLL DIAGNOSTIC");
