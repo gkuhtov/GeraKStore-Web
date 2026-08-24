@@ -693,7 +693,6 @@ function openApp(id) {
 
   const content = $("#appDetailContent");
 
-  const renderStart = performance.now();
 
   content.innerHTML = `
     <div class="detail-hero">
@@ -892,12 +891,6 @@ function openApp(id) {
       <p>Приложение доступно для установки через репозиторий GeraKStore.</p>
     </section>
   `;
-
-  console.log(
-    "[GeraKStore] detail render:",
-    Math.round(performance.now() - renderStart),
-    "ms"
-  );
 
   $("#appModal").classList.add("open");
   $("#appModal").setAttribute("aria-hidden", "false");
