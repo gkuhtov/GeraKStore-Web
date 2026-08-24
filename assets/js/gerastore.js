@@ -903,28 +903,11 @@ function openApp(id) {
   $("#appModal").setAttribute("aria-hidden", "false");
 
   setTimeout(() => {
-    let output = "";
+    const modal = document.querySelector("#appModal");
+    const detail = document.querySelector("#appModal .app-detail");
 
-    document.querySelectorAll("*").forEach(el => {
-      const style = getComputedStyle(el);
-
-      if (
-        el.scrollHeight > el.clientHeight + 2 &&
-        (
-          style.overflowY === "auto" ||
-          style.overflowY === "scroll"
-        )
-      ) {
-        output +=
-          el.tagName +
-          " #" + (el.id || "-") +
-          " ." + (typeof el.className === "string" ? el.className : "-") +
-          " | scrollTop=" + el.scrollTop +
-          " | client=" + el.clientHeight +
-          " | scroll=" + el.scrollHeight +
-          "\n";
-      }
-    });
+    const modalRect = modal?.getBoundingClientRect();
+    const detailRect = detail?.getBoundingClientRect();
 
     let diagnostic = document.querySelector("#geraScrollDiagnostic");
 
@@ -946,7 +929,7 @@ function openApp(id) {
         background: "rgba(0,0,0,.9)",
         color: "#00ff88",
         fontSize: "11px",
-        lineHeight: "1.4",
+        lineHeight: "1.5",
         whiteSpace: "pre-wrap"
       });
 
@@ -955,18 +938,36 @@ function openApp(id) {
 
     diagnostic.textContent =
       "SCROLL DIAGNOSTIC\n\n" +
-      output +
-      "\nAPP DETAIL:\n" +
-      (
-        document.querySelector("#appModal .app-detail")
-          ? "scrollTop=" +
-            document.querySelector("#appModal .app-detail").scrollTop +
-            "\nclientHeight=" +
-            document.querySelector("#appModal .app-detail").clientHeight +
-            "\nscrollHeight=" +
-            document.querySelector("#appModal .app-detail").scrollHeight
-          : "NOT FOUND"
-      );
+
+      "WINDOW\n" +
+      "scrollY = " + window.scrollY + "\n" +
+      "pageYOffset = " + window.pageYOffset + "\n\n" +
+
+      "DOCUMENT\n" +
+      "documentElement.scrollTop = " +
+      document.documentElement.scrollTop + "\n" +
+      "body.scrollTop = " +
+      document.body.scrollTop + "\n\n" +
+
+      "MODAL\n" +
+      "scrollTop = " +
+      (modal?.scrollTop ?? "N/A") + "\n" +
+      "top = " +
+      (modalRect?.top ?? "N/A") + "\n" +
+      "height = " +
+      (modalRect?.height ?? "N/A") + "\n\n" +
+
+      "APP DETAIL\n" +
+      "scrollTop = " +
+      (detail?.scrollTop ?? "N/A") + "\n" +
+      "clientHeight = " +
+      (detail?.clientHeight ?? "N/A") + "\n" +
+      "scrollHeight = " +
+      (detail?.scrollHeight ?? "N/A") + "\n" +
+      "top = " +
+      (detailRect?.top ?? "N/A") + "\n" +
+      "bottom = " +
+      (detailRect?.bottom ?? "N/A");
   }, 100);
 
 
