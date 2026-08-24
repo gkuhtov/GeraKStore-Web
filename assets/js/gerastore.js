@@ -693,6 +693,8 @@ function openApp(id) {
 
   const content = $("#appDetailContent");
 
+  const renderStart = performance.now();
+
   content.innerHTML = `
     <div class="detail-hero">
 
@@ -891,8 +893,85 @@ function openApp(id) {
     </section>
   `;
 
+  console.log(
+    "[GeraKStore] detail render:",
+    Math.round(performance.now() - renderStart),
+    "ms"
+  );
+
   $("#appModal").classList.add("open");
   $("#appModal").setAttribute("aria-hidden", "false");
+
+  setTimeout(() => {
+    console.log("[GeraKStore] SCROLL DIAGNOSTIC");
+
+    document.querySelectorAll("*").forEach(el => {
+      const style = getComputedStyle(el);
+
+      if (
+        el.scrollHeight > el.clientHeight + 2 &&
+        (
+          style.overflowY === "auto" ||
+          style.overflowY === "scroll"
+        )
+      ) {
+        console.log(
+          "[SCROLL]",
+          el.tagName,
+          "#" + (el.id || ""),
+          "." + (el.className || ""),
+          "scrollTop=" + el.scrollTop,
+          "clientHeight=" + el.clientHeight,
+          "scrollHeight=" + el.scrollHeight
+        );
+      }
+    });
+  }, 100);
+
+  setTimeout(() => {
+    console.log("[GeraKStore] SCROLL DIAGNOSTIC");
+
+    document.querySelectorAll("*").forEach(el => {
+      const style = getComputedStyle(el);
+
+      if (
+        el.scrollHeight > el.clientHeight + 2 &&
+        (
+          style.overflowY === "auto" ||
+          style.overflowY === "scroll"
+        )
+      ) {
+        console.log(
+          "[SCROLL]",
+          el.tagName,
+          "#" + (el.id || ""),
+          "." + (el.className || ""),
+          "scrollTop=" + el.scrollTop,
+          "clientHeight=" + el.clientHeight,
+          "scrollHeight=" + el.scrollHeight
+        );
+      }
+    });
+  }, 100);
+
+  const detail = document.querySelector("#appModal .app-detail");
+
+  if (detail) {
+    const resetDetailScroll = () => {
+      detail.scrollTop = 0;
+      detail.scrollLeft = 0;
+    };
+
+    resetDetailScroll();
+
+    requestAnimationFrame(() => {
+      resetDetailScroll();
+
+      requestAnimationFrame(() => {
+        resetDetailScroll();
+      });
+    });
+  }
 
   document.body.style.overflow = "hidden";
 
@@ -969,6 +1048,12 @@ function closeScreenshotViewer() {
 }
 
 function closeApp() {
+  const detail = document.querySelector(".app-detail");
+
+  if (detail) {
+    detail.scrollTop = 0;
+  }
+
   $("#appModal").classList.remove("open");
   $("#appModal").setAttribute("aria-hidden", "true");
 
