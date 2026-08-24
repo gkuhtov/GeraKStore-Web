@@ -1,6 +1,11 @@
 <!doctype html>
 <html lang="ru">
 <head>
+  <script>
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#08080c">
@@ -372,12 +377,15 @@
     <div class="modal-backdrop" id="modalBackdrop"></div>
 
     <article class="app-detail glass-surface">
-      <button class="modal-close glass-chip" id="modalClose" type="button" aria-label="Закрыть">
-        ×
-      </button>
-
       <div id="appDetailContent"></div>
     </article>
+
+    <button
+      class="modal-close glass-chip"
+      id="modalClose"
+      type="button"
+      aria-label="Закрыть"
+    >×</button>
   </div>
 
   <div class="toast glass-panel" id="toast"></div>

@@ -982,8 +982,11 @@ function closeApp() {
 }
 
 function setupModal() {
-  $("#modalClose").addEventListener("click", closeApp);
-  $("#modalBackdrop").addEventListener("click", closeApp);
+  const close = $("#modalClose");
+  const backdrop = $("#modalBackdrop");
+
+  close?.addEventListener("click", closeApp);
+  backdrop?.addEventListener("click", closeApp);
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
@@ -1084,6 +1087,13 @@ function cleanTrackingParameters() {
     window.location.pathname + window.location.hash
   );
 }
+
+
+/* ---------------- SCROLL RESTORE ---------------- */
+
+/* ---------------- INIT ---------------- */
+
+/* ---------------- INIT ---------------- */
 
 /* ---------------- INIT ---------------- */
 
