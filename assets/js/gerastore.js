@@ -641,7 +641,11 @@ function setupAppCardAnimation() {
 
 function setupCardCursorLight() {
   document.addEventListener("pointermove", event => {
-    const card = event.target.closest(".app-card");
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    const card = target.closest(".app-card");
 
     if (!card) return;
 
@@ -655,7 +659,11 @@ function setupCardCursorLight() {
   }, {passive:true});
 
   document.addEventListener("pointerleave", event => {
-    const card = event.target.closest(".app-card");
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    const card = target.closest(".app-card");
 
     if (!card) return;
 
@@ -685,6 +693,119 @@ function setupRepoCopy() {
 }
 
 /* ---------------- APP DETAIL ---------------- */
+
+let lockedPageScrollY = 0;
+let pageScrollLocked = false;
+
+function pageScrollEventIsInsideDetail(event) {
+  const detail = document.querySelector("#appModal .app-detail");
+
+  return !!(detail && detail.contains(event.target));
+}
+
+function blockBackgroundScroll(event) {
+  if (!pageScrollLocked) return;
+
+  if (pageScrollEventIsInsideDetail(event)) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}
+
+function blockBackgroundKeys(event) {
+  if (!pageScrollLocked) return;
+
+  const keys = [
+    "ArrowUp",
+    "ArrowDown",
+    "PageUp",
+    "PageDown",
+    "Home",
+    "End",
+    " ",
+    "Spacebar"
+  ];
+
+  if (!keys.includes(event.key)) return;
+
+  const detail = document.querySelector("#appModal .app-detail");
+
+  if (detail && document.activeElement && detail.contains(document.activeElement)) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}
+
+function lockPageScroll() {
+  lockedPageScrollY = window.scrollY;
+  pageScrollLocked = true;
+
+  document.documentElement.classList.add("modal-page-locked");
+  document.body.classList.add("modal-page-locked");
+
+  document.documentElement.style.overflow = "hidden";
+  document.documentElement.style.height = "100vh";
+  document.documentElement.style.position = "fixed";
+  document.documentElement.style.left = "0";
+  document.documentElement.style.right = "0";
+  document.documentElement.style.top = "0";
+  document.documentElement.style.width = "100%";
+
+  document.body.style.position = "fixed";
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.top = `-${lockedPageScrollY}px`;
+  document.body.style.overflow = "hidden";
+  document.body.style.height = "100vh";
+
+  window.addEventListener("wheel", blockBackgroundScroll, {
+    passive: false,
+    capture: true
+  });
+
+  window.addEventListener("touchmove", blockBackgroundScroll, {
+    passive: false,
+    capture: true
+  });
+
+  window.addEventListener("keydown", blockBackgroundKeys, {
+    capture: true
+  });
+
+  window.scrollTo(0, lockedPageScrollY);
+}
+
+function unlockPageScroll() {
+  pageScrollLocked = false;
+
+  window.removeEventListener("wheel", blockBackgroundScroll, true);
+  window.removeEventListener("touchmove", blockBackgroundScroll, true);
+  window.removeEventListener("keydown", blockBackgroundKeys, true);
+
+  document.documentElement.classList.remove("modal-page-locked");
+  document.body.classList.remove("modal-page-locked");
+
+  document.documentElement.style.overflow = "";
+  document.documentElement.style.height = "";
+  document.documentElement.style.position = "";
+  document.documentElement.style.left = "";
+  document.documentElement.style.right = "";
+  document.documentElement.style.top = "";
+  document.documentElement.style.width = "";
+
+  document.body.style.position = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.top = "";
+  document.body.style.overflow = "";
+  document.body.style.height = "";
+
+  window.scrollTo(0, lockedPageScrollY);
+}
 
 function openApp(id) {
   const app = state.apps.find(item => item.id === id);
@@ -895,6 +1016,8 @@ function openApp(id) {
   $("#appModal").classList.add("open");
   $("#appModal").setAttribute("aria-hidden", "false");
 
+  lockPageScroll();
+
   history.replaceState(
     null,
     "",
@@ -975,7 +1098,7 @@ function closeApp() {
   $("#appModal").classList.remove("open");
   $("#appModal").setAttribute("aria-hidden", "true");
 
-  document.body.style.overflow = "";
+  unlockPageScroll();
 
   history.replaceState(
     null,
