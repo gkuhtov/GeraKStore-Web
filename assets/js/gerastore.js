@@ -591,51 +591,9 @@ function setupBackToTop() {
 /* ---------------- APP CARD ANIMATION ---------------- */
 
 function setupAppCardAnimation() {
-  document.addEventListener("click", event => {
-    const card = event.target.closest(".app-card");
-
-    if (!card) return;
-
-    const id = card.dataset.appId;
-
-    document.querySelectorAll(".app-card.is-selected").forEach(item => {
-      if (item !== card) {
-        item.classList.remove("is-selected");
-      }
-    });
-
-    card.classList.remove("selecting");
-    void card.offsetWidth;
-
-    card.classList.add("is-selected");
-    card.classList.add("selecting");
-
-    setTimeout(() => {
-      card.classList.remove("selecting");
-    }, 400);
-
-    if (id) {
-      openApp(id);
-    }
-  });
-
-  document.addEventListener("keydown", event => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-
-    const card = event.target.closest(".app-card");
-
-    if (!card) return;
-
-    event.preventDefault();
-
-    const id = card.dataset.appId;
-
-    if (id) {
-      openApp(id);
-    }
-  });
+  // Открытие карточки выполняется только через renderCatalog().
+  // Здесь больше нет отдельного click handler, чтобы openApp() не вызывался дважды.
 }
-
 
 /* ---------------- CARD CURSOR LIGHT ---------------- */
 
@@ -745,37 +703,12 @@ function lockPageScroll() {
   document.documentElement.classList.add("modal-page-locked");
   document.body.classList.add("modal-page-locked");
 
-  document.documentElement.style.overflow = "hidden";
-  document.documentElement.style.height = "100vh";
-  document.documentElement.style.position = "fixed";
-  document.documentElement.style.left = "0";
-  document.documentElement.style.right = "0";
-  document.documentElement.style.top = "0";
-  document.documentElement.style.width = "100%";
-
   document.body.style.position = "fixed";
   document.body.style.left = "0";
   document.body.style.right = "0";
   document.body.style.width = "100%";
   document.body.style.top = `-${lockedPageScrollY}px`;
   document.body.style.overflow = "hidden";
-  document.body.style.height = "100vh";
-
-  window.addEventListener("wheel", blockBackgroundScroll, {
-    passive: false,
-    capture: true
-  });
-
-  window.addEventListener("touchmove", blockBackgroundScroll, {
-    passive: false,
-    capture: true
-  });
-
-  window.addEventListener("keydown", blockBackgroundKeys, {
-    capture: true
-  });
-
-  window.scrollTo(0, lockedPageScrollY);
 }
 
 function unlockPageScroll() {
@@ -790,26 +723,15 @@ function unlockPageScroll() {
   document.documentElement.classList.remove("modal-page-locked");
   document.body.classList.remove("modal-page-locked");
 
-  document.documentElement.style.overflow = "";
-  document.documentElement.style.height = "";
-  document.documentElement.style.position = "";
-  document.documentElement.style.left = "";
-  document.documentElement.style.right = "";
-  document.documentElement.style.top = "";
-  document.documentElement.style.width = "";
-
   document.body.style.position = "";
   document.body.style.left = "";
   document.body.style.right = "";
   document.body.style.width = "";
   document.body.style.top = "";
   document.body.style.overflow = "";
-  document.body.style.height = "";
 
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo(0, restoreScrollY);
-    });
+    window.scrollTo(0, restoreScrollY);
   });
 }
 
