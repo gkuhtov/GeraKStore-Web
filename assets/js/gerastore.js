@@ -217,16 +217,44 @@ function renderFilters() {
 function filteredApps() {
   const query = state.query.trim().toLowerCase();
 
-  return state.apps.filter(app => {
+  const apps = state.apps.filter(app => {
     const category =
       state.category === "Все" ||
       app.category === state.category;
 
     const text =
-      `${app.name} ${app.id} ${app.description}`
+      `${app.name} ${app.id} ${app.description} ${app.developer}`
         .toLowerCase();
 
     return category && (!query || text.includes(query));
+  });
+
+  return apps.sort((a, b) => {
+    switch (state.sort) {
+      case "name":
+        return String(a.name).localeCompare(
+          String(b.name),
+          "ru",
+          { sensitivity: "base" }
+        );
+
+      case "size": {
+        const sizeA = parseFloat(String(a.size).replace(",", ".")) || 0;
+        const sizeB = parseFloat(String(b.size).replace(",", ".")) || 0;
+        return sizeB - sizeA;
+      }
+
+      case "version":
+        return String(b.version).localeCompare(
+          String(a.version),
+          undefined,
+          { numeric: true, sensitivity: "base" }
+        );
+
+      case "newest":
+      default:
+        return String(b.updated).localeCompare(String(a.updated));
+    }
   });
 }
 
