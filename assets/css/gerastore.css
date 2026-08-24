@@ -5301,3 +5301,41 @@ html[data-theme="light"] .step{
     padding-top:72px !important;
   }
 }
+
+/* =========================================================
+   MODAL SCROLL LOCK
+   Не передаём прокрутку карточки странице под ней
+   ========================================================= */
+
+#appModal{
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+#appModal .app-detail{
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+body:has(#appModal.open){
+  overscroll-behavior: none;
+}
+
+@media (max-width:620px){
+  #appModal{
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+  }
+
+  #appModal .app-detail{
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+
+  #appModal .modal-backdrop{
+    touch-action: none !important;
+  }
+}
+
