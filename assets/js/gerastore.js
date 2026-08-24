@@ -700,41 +700,31 @@ function lockPageScroll() {
   lockedPageScrollY = window.scrollY;
   pageScrollLocked = true;
 
-  document.documentElement.classList.add("modal-page-locked");
-  document.body.classList.add("modal-page-locked");
+  // Не изменяем html/body.
+  // Не меняем overflow, position, top и scrollY.
 
-  document.body.style.position = "fixed";
-  document.body.style.left = "0";
-  document.body.style.right = "0";
-  document.body.style.width = "100%";
-  document.body.style.top = `-${lockedPageScrollY}px`;
-  document.body.style.overflow = "hidden";
+  window.addEventListener("wheel", blockBackgroundScroll, {
+    passive: false,
+    capture: true
+  });
+
+  window.addEventListener("touchmove", blockBackgroundScroll, {
+    passive: false,
+    capture: true
+  });
+
+  window.addEventListener("keydown", blockBackgroundKeys, {
+    capture: true
+  });
 }
 
 function unlockPageScroll() {
-  const restoreScrollY = lockedPageScrollY;
-
   pageScrollLocked = false;
 
   window.removeEventListener("wheel", blockBackgroundScroll, true);
   window.removeEventListener("touchmove", blockBackgroundScroll, true);
   window.removeEventListener("keydown", blockBackgroundKeys, true);
-
-  document.documentElement.classList.remove("modal-page-locked");
-  document.body.classList.remove("modal-page-locked");
-
-  document.body.style.position = "";
-  document.body.style.left = "";
-  document.body.style.right = "";
-  document.body.style.width = "";
-  document.body.style.top = "";
-  document.body.style.overflow = "";
-
-  requestAnimationFrame(() => {
-    window.scrollTo(0, restoreScrollY);
-  });
 }
-
 function openApp(id) {
   const app = state.apps.find(item => item.id === id);
 
