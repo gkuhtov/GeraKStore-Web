@@ -48,11 +48,8 @@
         </span>
       </button>
 
-      <a class="nav-action liquid-button" href="https://t.me/madebygood" target="_blank" rel="noopener">
-        Telegram <span>↗</span>
-      </a>
-
-      <a class="nav-action liquid-button" href="https://github.com/gkuhtov/GeraKStore" target="_blank" rel="noopener">
+      
+        <a class="nav-action liquid-button" href="https://github.com/gkuhtov/GeraKStore" target="_blank" rel="noopener">
         GitHub <span>↗</span>
       </a>
     </div>
@@ -119,11 +116,11 @@
         </div>
       </div>
 
-      <div class="hero-float glass-panel hero-float-accent">
-        <div class="mini-icon">GBox</div>
+      <div class="hero-float glass-panel">
+        <div class="mini-icon">IPA</div>
         <div>
           <strong>GBox ready</strong>
-          <span>Подключается в один клик</span>
+          <span>Репозиторий подключается напрямую</span>
         </div>
       </div>
     </section>
@@ -377,8 +374,9 @@
     <div class="footer-links">
       <a href="#catalog">Каталог</a>
       <a href="#install">Как установить</a>
-      <a href="https://t.me/madebygood" target="_blank" rel="noopener">Telegram</a>
-      <a href="https://github.com/gkuhtov/GeraKStore" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/gkuhtov/GeraKStore" target="_blank" rel="noopener">
+        GitHub
+      </a>
     </div>
 
     <div class="footer-copy">© 2026 GeraKStore</div>
