@@ -1,8 +1,9 @@
 const REPO_URLS = [
   "https://gkuhtov.github.io/GeraStore/repo.json",
   "https://cdn.jsdelivr.net/gh/gkuhtov/GeraStore@main/repo.json",
-  "https://gkuhtov.github.io/GeraStore/repo.json"
+  "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json"
 ];
+
 const REPO_URL = REPO_URLS[0];
 const LOCAL_APPS_URL = "data/apps.json";
 
