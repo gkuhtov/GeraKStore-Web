@@ -1,4 +1,9 @@
-const REPO_URL = "https://raw.githubusercontent.com/gkuhtov/GeraStore/main/repo.json";
+const REPO_URLS = [
+  "https://gkuhtov.github.io/GeraStore/repo.json",
+  "https://cdn.jsdelivr.net/gh/gkuhtov/GeraStore@main/repo.json",
+  "https://gkuhtov.github.io/GeraStore/repo.json"
+];
+const REPO_URL = REPO_URLS[0];
 const LOCAL_APPS_URL = "data/apps.json";
 
 const state = {
@@ -100,83 +105,116 @@ function normalizeApps(raw) {
   }));
 }
 
-async function loadApps() {
+function mapRepoApps(repo) {
+  if (Array.isArray(repo.appRepositories)) {
+    const categories = Array.isArray(repo.appCategories) ? repo.appCategories : [];
+
+    return repo.appRepositories.map((app, index) => {
+      const categoryIndex = Number(app.appCateIndex);
+
+      const category =
+        app.category ||
+        (Number.isInteger(categoryIndex) && categories[categoryIndex]
+          ? categories[categoryIndex]
+          : "Другое");
+
+      const versions = Array.isArray(app.versions)
+        ? app.versions.map(version => ({
+            version: version.version || version.versionName || "—",
+            date: version.date || version.versionDate || "—",
+            size: version.size || version.fileSize || version.ipaSize || "",
+            minIOSVersion: version.minIOSVersion || version.minimumIOSVersion || version.ios || "",
+            download: version.downloadURL || version.downloadUrl || version.url || "#"
+          }))
+        : [];
+
+      const latest = versions.length ? versions[versions.length - 1] : {};
+
+      const rawSize =
+        app.appSize ||
+        app.size ||
+        app.fileSize ||
+        latest.size ||
+        0;
+
+      return {
+        id: app.bundleIdentifier || app.bundleID || app.identifier || "app-" + index,
+        name: app.appName || app.name || app.title || "Без названия",
+        developer: app.developerName || app.developer || app.author || "Неизвестный разработчик",
+        version: app.appVersion || app.version || latest.version || "—",
+        size: formatSize(rawSize),
+        category: category,
+        description: app.appDescription || app.localizedDescription || app.description || "Приложение из GeraKStore.",
+        icon: app.appImage || app.iconURL || app.icon || app.iconUrl || "assets/images/gerastore-mark.svg",
+        screenshots: Array.isArray(app.screenshots) ? app.screenshots : Array.isArray(app.screenshotURLs) ? app.screenshotURLs : [],
+        download: app.appPackage || app.downloadURL || app.downloadUrl || app.url || latest.download || "#",
+        updated: app.appUpdateTime || app.versionDate || app.updated || app.date || "—",
+        ios: app.minIOSVersion || app.minimumIOSVersion || app.ios || latest.minIOSVersion || "—",
+        whatsNew: app.whatsNew || app.whatIsNew || app.changelog || app.releaseNotes || app.notes || "",
+        versions: versions
+      };
+    });
+  }
+
+  if (Array.isArray(repo.apps)) {
+    return normalizeApps(repo.apps);
+  }
+
+  return [];
+}
+
+async function fetchRepoJson(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+
   try {
-    const repoResponse = await fetch(REPO_URL, {cache:"no-store"});
+    const response = await fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), {
+      cache: "no-store",
+      signal: controller.signal
+    });
 
-    if (repoResponse.ok) {
-      const repo = await repoResponse.json();
+    if (!response.ok) {
+      throw new Error(url + " → " + response.status);
+    }
 
-      if (Array.isArray(repo.appRepositories)) {
-        const categories = Array.isArray(repo.appCategories) ? repo.appCategories : [];
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
-        state.apps = repo.appRepositories.map((app, index) => {
-          const categoryIndex = Number(app.appCateIndex);
+async function loadApps() {
+  state.apps = [];
 
-          const category =
-            app.category ||
-            (Number.isInteger(categoryIndex) && categories[categoryIndex]
-              ? categories[categoryIndex]
-              : "Другое");
+  for (const url of REPO_URLS) {
+    try {
+      const repo = await fetchRepoJson(url);
+      let apps = mapRepoApps(repo);
 
-          const versions = Array.isArray(app.versions)
-            ? app.versions.map(version => ({
-                version: version.version || version.versionName || "—",
-                date: version.date || version.versionDate || "—",
-                size: version.size || version.fileSize || version.ipaSize || "",
-                minIOSVersion: version.minIOSVersion || version.minimumIOSVersion || version.ios || "",
-                download: version.downloadURL || version.downloadUrl || version.url || "#"
-              }))
-            : [];
-
-          const latest = versions.length ? versions[versions.length - 1] : {};
-
-          const rawSize =
-            app.appSize ||
-            app.size ||
-            app.fileSize ||
-            latest.size ||
-            0;
-
-          return {
-            id: app.bundleIdentifier || app.bundleID || app.identifier || "app-" + index,
-            name: app.appName || app.name || app.title || "Без названия",
-            developer: app.developerName || app.developer || app.author || "Неизвестный разработчик",
-            version: app.appVersion || app.version || latest.version || "—",
-            size: formatSize(rawSize),
-            category: category,
-            description: app.appDescription || app.localizedDescription || app.description || "Приложение из GeraKStore.",
-            icon: app.appImage || app.iconURL || app.icon || app.iconUrl || "assets/images/gerastore-mark.svg",
-            screenshots: Array.isArray(app.screenshots) ? app.screenshots : Array.isArray(app.screenshotURLs) ? app.screenshotURLs : [],
-            download: app.appPackage || app.downloadURL || app.downloadUrl || app.url || latest.download || "#",
-            updated: app.appUpdateTime || app.versionDate || app.updated || app.date || "—",
-            ios: app.minIOSVersion || app.minimumIOSVersion || app.ios || latest.minIOSVersion || "—",
-            whatsNew: app.whatsNew || app.whatIsNew || app.changelog || app.releaseNotes || app.notes || "",
-            versions: versions
-          };
-        });
-      } else if (Array.isArray(repo.apps)) {
-        state.apps = normalizeApps(repo.apps);
-      } else if (repo.appsURL) {
-        const appsResponse = await fetch(repo.appsURL, {cache:"no-store"});
-
+      if (!apps.length && repo.appsURL) {
+        const appsResponse = await fetch(repo.appsURL, {cache: "no-store"});
         if (appsResponse.ok) {
-          state.apps = normalizeApps(await appsResponse.json());
+          apps = normalizeApps(await appsResponse.json());
         }
       }
+
+      if (apps.length) {
+        state.apps = apps;
+        console.info("GeraKStore catalog loaded from", url);
+        break;
+      }
+    } catch (error) {
+      console.warn("Catalog source failed:", url, error);
     }
-  } catch(error) {
-    console.warn("Не удалось загрузить удалённый каталог.", error);
   }
 
   if (!state.apps.length) {
     try {
-      const localResponse = await fetch(LOCAL_APPS_URL, {cache:"no-store"});
-
+      const localResponse = await fetch(LOCAL_APPS_URL, {cache: "no-store"});
       if (localResponse.ok) {
         state.apps = normalizeApps(await localResponse.json());
       }
-    } catch(error) {
+    } catch (error) {
       console.warn("Не удалось загрузить локальный каталог.", error);
     }
   }
