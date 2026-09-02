@@ -10,7 +10,8 @@ const LOCAL_APPS_URL = "data/apps.json";
 const state = {
   apps: [],
   category: "Все",
-  query: ""
+  query: "",
+  sort: "newest"
 };
 
 const $ = selector => document.querySelector(selector);
@@ -1194,3 +1195,180 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("hashchange", openHashApp);
+
+/* ---------------- SHOWCASE SECTIONS ---------------- */
+
+(function setupShowcase() {
+  function getAppDate(app) {
+    return app.updatedAt || app.updated || app.releaseDate || app.date || "";
+  }
+
+  function dateValue(app) {
+    const value = getAppDate(app);
+    const time = Date.parse(value);
+    return Number.isNaN(time) ? 0 : time;
+  }
+
+  function renderShowcase() {
+    const newGrid = document.getElementById("newAppsGrid");
+
+    if (!newGrid) return;
+    if (!Array.isArray(state.apps) || !state.apps.length) return;
+
+    const apps = [...state.apps]
+      .sort((a, b) => dateValue(b) - dateValue(a))
+      .slice(0, 4);
+
+    newGrid.innerHTML = apps.map(appCard).join("");
+
+    newGrid.querySelectorAll(".app-card").forEach(card => {
+      const appId = card.dataset.appId;
+      if (!appId) return;
+
+      const open = () => {
+        if (typeof openApp === "function") {
+          openApp(appId);
+        }
+      };
+
+      card.addEventListener("click", open);
+
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+
+  function setupShowcaseNavigation() {
+    document.querySelectorAll("[data-show-catalog]").forEach(button => {
+      button.addEventListener("click", () => {
+        const catalog = document.getElementById("catalog");
+
+        if (catalog) {
+          catalog.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setupShowcaseNavigation();
+
+    const originalRenderAll = window.renderAll;
+
+    if (typeof originalRenderAll === "function") {
+      window.renderAll = function () {
+        originalRenderAll();
+        renderShowcase();
+      };
+    }
+
+    setTimeout(renderShowcase, 300);
+    setTimeout(renderShowcase, 1200);
+  });
+})();
+
+/* ---------------- SHOWCASE SCROLL REVEAL ---------------- */
+
+(function setupShowcaseReveal() {
+  document.addEventListener("DOMContentLoaded", () => {
+    const section = document.querySelector(".showcase-section");
+
+    if (!section) return;
+
+    if (!("IntersectionObserver" in window)) {
+      section.classList.add("is-visible");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            section.classList.add("is-visible");
+            observer.unobserve(section);
+          }
+        });
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+    observer.observe(section);
+  });
+})();
+
+
+
+/* ============================================================
+   GLOBAL SECTION SCROLL REVEAL
+   ============================================================ */
+
+(function setupGlobalSectionReveal() {
+  const selector = [
+    ".intro",
+    ".stats",
+    ".features",
+    ".catalog",
+    ".install",
+    ".updates",
+    ".cta"
+  ].join(",");
+
+  function init() {
+    const sections = document.querySelectorAll(selector);
+
+    if (!sections.length) return;
+
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      sections.forEach(section => {
+        section.classList.add("is-visible");
+      });
+
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      sections.forEach(section => {
+        section.classList.add("is-visible");
+      });
+
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px"
+      }
+    );
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
