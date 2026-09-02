@@ -7180,3 +7180,35 @@ body:has(#appModal.open){
   }
 
 }
+
+/* ============================================================
+   MOBILE CATALOG TOOLS
+   Clean Liquid Glass layout
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .catalog-tools {
+    position: relative !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    gap: 10px;
+  }
+
+  .catalog-tools::before,
+  .catalog-tools::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .catalog-tools input,
+  .catalog-tools select,
+  .catalog-tools button {
+    border-radius: 16px;
+  }
+}
+
