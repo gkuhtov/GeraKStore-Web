@@ -7212,3 +7212,351 @@ body:has(#appModal.open){
   }
 }
 
+
+/* ============================================================
+   MOBILE HEADER POLISH
+   Compact Liquid Glass navigation
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  header,
+  .site-header,
+  .topbar,
+  .navbar,
+  .nav-shell {
+    max-width: calc(100% - 20px) !important;
+    width: calc(100% - 20px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .header-inner,
+  .nav-inner,
+  .topbar-inner,
+  .site-header-inner {
+    min-height: 58px !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  /* Бренд */
+  .brand,
+  .logo,
+  .site-brand,
+  .nav-brand {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .brand-name,
+  .logo-name,
+  .site-brand-name,
+  .nav-brand-name {
+    font-size: 16px !important;
+    letter-spacing: -0.025em !important;
+    white-space: nowrap !important;
+  }
+
+  /* Навигационные ссылки */
+  .nav-links,
+  .navigation,
+  .nav-menu {
+    gap: 5px !important;
+  }
+
+  .nav-links a,
+  .navigation a,
+  .nav-menu a {
+    padding: 7px 8px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Правая группа */
+  .nav-actions,
+  .header-actions,
+  .topbar-actions,
+  .site-header-actions {
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Кнопки темы, Telegram и GitHub */
+  .nav-actions a,
+  .nav-actions button,
+  .header-actions a,
+  .header-actions button,
+  .topbar-actions a,
+  .topbar-actions button,
+  .site-header-actions a,
+  .site-header-actions button {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Если у ссылок есть текст, оставляем только иконку */
+  .nav-actions a span,
+  .header-actions a span,
+  .topbar-actions a span,
+  .site-header-actions a span {
+    display: none !important;
+  }
+
+  /* Компактнее сама стеклянная панель */
+  header.glass-panel,
+  .site-header.glass-panel,
+  .topbar.glass-panel,
+  .nav-shell.glass-panel {
+    border-radius: 20px !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 10px 30px rgba(0, 0, 0, 0.12) !important;
+  }
+}
+
+/* Очень узкие экраны */
+@media (max-width: 430px) {
+
+  .nav-links,
+  .navigation,
+  .nav-menu {
+    gap: 2px !important;
+  }
+
+  .nav-links a,
+  .navigation a,
+  .nav-menu a {
+    padding: 6px !important;
+    font-size: 10px !important;
+  }
+
+  .brand-name,
+  .logo-name,
+  .site-brand-name,
+  .nav-brand-name {
+    font-size: 15px !important;
+  }
+
+  .nav-actions a,
+  .nav-actions button,
+  .header-actions a,
+  .header-actions button,
+  .topbar-actions a,
+  .topbar-actions button,
+  .site-header-actions a,
+  .site-header-actions button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+  }
+}
+
+
+/* ============================================================
+   MOBILE NAVIGATION
+   Hide navigation arrows on phones
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .nav-links a::after,
+  .navigation a::after,
+  .nav-menu a::after,
+  .nav-links a .arrow,
+  .navigation a .arrow,
+  .nav-menu a .arrow,
+  .nav-links a svg,
+  .navigation a svg,
+  .nav-menu a svg {
+    display: none !important;
+    content: none !important;
+  }
+
+}
+
+
+/* ============================================================
+   MOBILE TOPBAR POLISH
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .topbar {
+    width: calc(100% - 20px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .topbar .nav {
+    width: 100% !important;
+    min-height: 54px !important;
+    padding: 7px 8px !important;
+    gap: 5px !important;
+    border-radius: 20px !important;
+  }
+
+  /* Навигационные ссылки */
+  .topbar .nav a {
+    padding: 7px 7px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Убираем стрелки у ссылок только на телефоне */
+  .topbar .nav a::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Правая группа */
+  .topbar .theme-toggle,
+  .topbar .nav-action {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    border-radius: 11px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Telegram и GitHub показываем только иконками */
+  .topbar .nav-action {
+    font-size: 0 !important;
+  }
+
+  .topbar .nav-action svg,
+  .topbar .nav-action img {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+}
+
+/* Очень узкие телефоны */
+@media (max-width: 430px) {
+
+  .topbar .nav {
+    padding: 6px !important;
+    gap: 3px !important;
+  }
+
+  .topbar .nav a {
+    padding: 6px 5px !important;
+    font-size: 10px !important;
+  }
+
+  .topbar .theme-toggle,
+  .topbar .nav-action {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+  }
+
+}
+
+
+/* =========================================================
+   Mobile topbar
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .topbar {
+    top: 10px;
+    width: calc(100% - 20px);
+    gap: 6px;
+  }
+
+  .brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 11px;
+    border-radius: 15px;
+  }
+
+  .brand img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .brand span {
+    font-size: 13px;
+  }
+
+  .nav {
+    display: none !important;
+  }
+
+  .top-actions {
+    flex: 0 0 auto;
+    gap: 5px;
+  }
+
+  .theme-toggle,
+  .nav-action {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 13px;
+  }
+
+  .nav-action {
+    display: grid;
+    place-items: center;
+    font-size: 0;
+  }
+
+  .nav-action svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .topbar {
+    top: 7px;
+    width: calc(100% - 14px);
+    gap: 5px;
+  }
+
+  .brand {
+    padding: 7px 9px;
+  }
+
+  .brand img {
+    width: 19px;
+    height: 19px;
+  }
+
+  .brand span {
+    font-size: 12px;
+  }
+
+  .top-actions {
+    gap: 4px;
+  }
+
+  .theme-toggle,
+  .nav-action {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .nav-action svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
