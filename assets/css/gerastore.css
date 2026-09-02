@@ -7560,3 +7560,97 @@ body:has(#appModal.open){
   }
 }
 
+
+/* =========================================================
+   Mobile social icons
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .nav-action {
+    font-size: 0 !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  /* Remove temporary TG / GH text labels */
+  .nav-action::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Show the real SVG icons */
+  .nav-action svg {
+    display: block !important;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+
+  .nav-action[href*="t.me"] svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-action[href*="github.com"] svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Clean glass buttons */
+  .theme-toggle,
+  .nav-action {
+    width: 36px;
+    height: 36px;
+    padding: 0 !important;
+    border-radius: 13px;
+  }
+
+  .nav-action {
+    background: rgba(255,255,255,.08);
+  }
+
+  .nav-action:hover {
+    background: rgba(255,255,255,.15);
+  }
+
+  .nav-action:active {
+    transform: scale(.90);
+  }
+
+  /* Telegram */
+  .nav-action[href*="t.me"] {
+    background: rgba(35, 158, 255, .12);
+  }
+
+  .nav-action[href*="t.me"]:hover {
+    background: rgba(35, 158, 255, .20);
+  }
+
+  /* GitHub */
+  .nav-action[href*="github.com"] {
+    background: rgba(255,255,255,.09);
+  }
+
+  .nav-action[href*="github.com"]:hover {
+    background: rgba(255,255,255,.16);
+  }
+}
+
+
+@media (max-width: 430px) {
+
+  .theme-toggle,
+  .nav-action {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .nav-action svg {
+    width: 17px;
+    height: 17px;
+    flex-basis: 17px;
+  }
+}
+
