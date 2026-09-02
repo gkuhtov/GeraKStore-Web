@@ -8262,3 +8262,128 @@ body:has(#appModal.open){
     border-radius: 8px !important;
   }
 }
+
+/* Final mobile Liquid Glass header sizing */
+@media (max-width: 700px) {
+  .topbar {
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+    gap: 7px !important;
+  }
+
+  .topbar .brand {
+    padding: 9px 13px 9px 10px !important;
+    gap: 8px !important;
+    min-height: 39px !important;
+    border-radius: 18px !important;
+  }
+
+  .topbar .brand img {
+    width: 23px !important;
+    height: 23px !important;
+    flex-basis: 23px !important;
+  }
+
+  .topbar .brand span {
+    font-size: 13.5px !important;
+  }
+
+  .topbar .top-actions {
+    gap: 7px !important;
+  }
+
+  /* Theme button */
+  .topbar .theme-toggle {
+    width: 39px !important;
+    height: 39px !important;
+    min-width: 39px !important;
+    min-height: 39px !important;
+    flex-basis: 39px !important;
+    border-radius: 14px !important;
+  }
+
+  .topbar .theme-toggle svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* Shared Telegram + GitHub glass */
+  .topbar .social-group {
+    height: 39px !important;
+    padding: 4px !important;
+    gap: 3px !important;
+    border-radius: 14px !important;
+  }
+
+  .topbar .social-group .social-action,
+  .topbar .social-group .social-action img {
+    width: 31px !important;
+    height: 31px !important;
+    min-width: 31px !important;
+    min-height: 31px !important;
+    max-width: 31px !important;
+    max-height: 31px !important;
+    border-radius: 9px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    gap: 6px !important;
+  }
+
+  .topbar .brand {
+    padding: 8px 11px 8px 9px !important;
+    gap: 7px !important;
+    min-height: 37px !important;
+    border-radius: 17px !important;
+  }
+
+  .topbar .brand img {
+    width: 22px !important;
+    height: 22px !important;
+    flex-basis: 22px !important;
+  }
+
+  .topbar .brand span {
+    font-size: 13px !important;
+  }
+
+  .topbar .top-actions {
+    gap: 6px !important;
+  }
+
+  .topbar .theme-toggle {
+    width: 37px !important;
+    height: 37px !important;
+    min-width: 37px !important;
+    min-height: 37px !important;
+    flex-basis: 37px !important;
+    border-radius: 13px !important;
+  }
+
+  .topbar .theme-toggle svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .topbar .social-group {
+    height: 37px !important;
+    padding: 3px !important;
+    gap: 3px !important;
+    border-radius: 13px !important;
+  }
+
+  .topbar .social-group .social-action,
+  .topbar .social-group .social-action img {
+    width: 31px !important;
+    height: 31px !important;
+    min-width: 31px !important;
+    min-height: 31px !important;
+    max-width: 31px !important;
+    max-height: 31px !important;
+    border-radius: 9px !important;
+  }
+}
