@@ -7654,3 +7654,212 @@ body:has(#appModal.open){
   }
 }
 
+
+/* =========================================================
+   GeraKStore
+   Mobile app icon navigation
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .topbar {
+    top: max(8px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: auto !important;
+    max-width: calc(100% - 16px) !important;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  /* Compact GeraKStore capsule */
+  .topbar .brand {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+
+    padding: 8px 12px 8px 9px;
+    gap: 7px;
+
+    border-radius: 17px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.17),
+        rgba(255,255,255,.065)
+      );
+
+    border: 1px solid rgba(255,255,255,.20);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.18),
+      0 10px 30px rgba(0,0,0,.20);
+
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+
+  .topbar .brand img {
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
+  }
+
+  .topbar .brand span {
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: -.025em;
+  }
+
+  /* Desktop navigation stays hidden */
+  .topbar .nav {
+    display: none !important;
+  }
+
+  /* Right side */
+  .topbar .top-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px;
+
+    border-radius: 19px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.15),
+        rgba(255,255,255,.055)
+      );
+
+    border: 1px solid rgba(255,255,255,.18);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.16),
+      0 10px 30px rgba(0,0,0,.18);
+
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+
+  /* Theme + social buttons */
+  .topbar .theme-toggle,
+  .topbar .social-action {
+    width: 35px !important;
+    height: 35px !important;
+    min-width: 35px !important;
+    min-height: 35px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border-radius: 13px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    box-shadow: none !important;
+  }
+
+  /* Actual application icons */
+  .topbar .social-action img {
+    display: block !important;
+
+    width: 23px !important;
+    height: 23px !important;
+
+    max-width: 23px !important;
+    max-height: 23px !important;
+
+    object-fit: cover;
+    border-radius: 7px;
+
+    pointer-events: none;
+  }
+
+  /* Telegram */
+  .topbar .social-telegram {
+    background: rgba(35,158,255,.10) !important;
+  }
+
+  .topbar .social-telegram:hover {
+    background: rgba(35,158,255,.17) !important;
+  }
+
+  /* GitHub */
+  .topbar .social-github {
+    background: rgba(255,255,255,.08) !important;
+  }
+
+  .topbar .social-github:hover {
+    background: rgba(255,255,255,.14) !important;
+  }
+
+  .topbar .social-action:active,
+  .topbar .theme-toggle:active {
+    transform: scale(.91) !important;
+  }
+
+  /* Remove any text or pseudo-elements */
+  .topbar .social-action::before,
+  .topbar .social-action::after {
+    display: none !important;
+    content: none !important;
+  }
+}
+
+
+/* Small iPhones */
+@media (max-width: 430px) {
+
+  .topbar {
+    max-width: calc(100% - 12px) !important;
+    gap: 5px;
+  }
+
+  .topbar .brand {
+    padding: 7px 10px 7px 8px;
+    gap: 6px;
+    border-radius: 16px;
+  }
+
+  .topbar .brand img {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+
+  .topbar .brand span {
+    font-size: 12px;
+  }
+
+  .topbar .top-actions {
+    gap: 4px;
+    padding: 3px;
+    border-radius: 17px;
+  }
+
+  .topbar .theme-toggle,
+  .topbar .social-action {
+    width: 33px !important;
+    height: 33px !important;
+    min-width: 33px !important;
+    min-height: 33px !important;
+    border-radius: 12px !important;
+  }
+
+  .topbar .social-action img {
+    width: 22px !important;
+    height: 22px !important;
+    max-width: 22px !important;
+    max-height: 22px !important;
+    border-radius: 6px;
+  }
+}
+
