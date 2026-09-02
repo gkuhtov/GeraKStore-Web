@@ -7890,3 +7890,33 @@ body:has(#appModal.open){
   }
 }
 
+
+/* Desktop social app icons */
+@media (min-width: 701px) {
+  .topbar .social-action {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+    flex: 0 0 42px !important;
+    border-radius: 13px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .topbar .social-action img {
+    display: block !important;
+    width: 42px !important;
+    height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    object-fit: cover !important;
+    border-radius: 13px !important;
+  }
+}
+
