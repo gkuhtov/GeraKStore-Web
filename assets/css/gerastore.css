@@ -7863,3 +7863,30 @@ body:has(#appModal.open){
   }
 }
 
+
+/* Full-size social app icons */
+@media (max-width: 700px) {
+  .topbar .social-action {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    border: 0 !important;
+  }
+
+  .topbar .social-action img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block !important;
+    object-fit: cover !important;
+    border-radius: inherit !important;
+  }
+
+  .topbar .social-telegram,
+  .topbar .social-github {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
