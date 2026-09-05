@@ -8601,3 +8601,298 @@ body:has(#appModal.open){
     border-radius: 12px !important;
   }
 }
+
+/* ============================================================
+   DESKTOP HEADER FIX
+   ============================================================ */
+
+@media (min-width: 701px) {
+
+  /* Все элементы верхней шапки в одну линию */
+  .topbar {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  .topbar .top-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  /* Общий блок Telegram + GitHub */
+  .topbar .social-group {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+
+    width: auto !important;
+    height: 50px !important;
+    min-height: 50px !important;
+
+    padding: 4px !important;
+    gap: 4px !important;
+
+    border-radius: 17px !important;
+
+    background: linear-gradient(
+      145deg,
+      var(--surface-strong),
+      var(--surface)
+    ) !important;
+
+    border: 1px solid var(--line) !important;
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.12),
+      0 20px 60px var(--shadow) !important;
+
+    backdrop-filter: blur(var(--blur)) saturate(165%) !important;
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(165%) !important;
+  }
+
+  /* Обе иконки абсолютно одинакового размера */
+  .topbar .social-group .social-action {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    flex: 0 0 42px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    border-radius: 12px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+  }
+
+  .topbar .social-group .social-action img {
+    display: block !important;
+
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    object-fit: cover !important;
+    border-radius: 12px !important;
+  }
+
+  /* Тема такого же размера */
+  .topbar .theme-toggle {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    flex: 0 0 50px !important;
+
+    border-radius: 17px !important;
+  }
+
+  .topbar .theme-toggle svg {
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
+
+
+/* ============================================================
+   ВЕСЬ КАТАЛОГ
+   Полностью тот же glass-подход, что поиск и сортировка
+   ============================================================ */
+
+.showcase-section .glass-section-link {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: auto !important;
+  min-width: 150px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+
+  padding: 0 17px !important;
+
+  gap: 9px !important;
+
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    145deg,
+    var(--surface-strong),
+    var(--surface)
+  ) !important;
+
+  color: var(--text) !important;
+
+  border: 1px solid var(--line) !important;
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.12),
+    0 20px 60px var(--shadow) !important;
+
+  backdrop-filter: blur(var(--blur)) saturate(165%) !important;
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(165%) !important;
+
+  font-size: 14px !important;
+  font-weight: 700 !important;
+
+  line-height: 1 !important;
+
+  cursor: pointer !important;
+
+  box-sizing: border-box !important;
+
+  transition:
+    transform .22s ease,
+    background .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease !important;
+}
+
+.showcase-section .glass-section-link span {
+  color: var(--muted) !important;
+  opacity: 1 !important;
+}
+
+.showcase-section .glass-section-link:hover {
+  transform: translateY(-2px) !important;
+
+  background: linear-gradient(
+    145deg,
+    var(--surface-strong),
+    var(--surface)
+  ) !important;
+
+  border-color: var(--line) !important;
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.16),
+    0 24px 65px var(--shadow) !important;
+}
+
+
+/* Светлая тема */
+html[data-theme="light"] .showcase-section .glass-section-link {
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,.78),
+    rgba(255,255,255,.52)
+  ) !important;
+
+  color: var(--text) !important;
+
+  border-color: rgba(30,35,50,.13) !important;
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.90),
+    0 12px 35px rgba(30,35,50,.10) !important;
+}
+
+html[data-theme="light"] .showcase-section .glass-section-link:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,.88),
+    rgba(255,255,255,.62)
+  ) !important;
+
+  border-color: rgba(30,35,50,.17) !important;
+}
+
+
+/* Мобильный "Весь каталог" оставляем на всю ширину */
+@media (max-width: 700px) {
+  .showcase-section .glass-section-link {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ============================================================
+   DESKTOP HEADER
+   Telegram + GitHub в одну строку
+   ============================================================ */
+
+@media (min-width: 701px) {
+
+  .topbar .social-group {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    padding: 4px !important;
+    box-sizing: border-box !important;
+  }
+
+  .topbar .social-group .social-action {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 42px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border-radius: 13px !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .topbar .social-group .social-action img {
+    display: block !important;
+
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    object-fit: contain !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-radius: 13px !important;
+  }
+
+}
