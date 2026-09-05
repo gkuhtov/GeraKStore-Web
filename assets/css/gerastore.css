@@ -8063,3 +8063,44 @@ html[data-theme="light"] .showcase-section .glass-section-link:hover {
   }
 
 }
+
+/* =========================================================
+   FINAL LAYOUT FIXES
+   ========================================================= */
+
+/* Телефон: больше полезной ширины внутри открытой карточки */
+@media (max-width:620px){
+
+  #appModal > .app-detail > #appDetailContent{
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+
+}
+
+/* ПК: в разделе "Обновления" категория и "Подробнее" всегда
+   помещаются в одну строку */
+@media (min-width:621px){
+
+  .updates-grid .app-card-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    min-width:0;
+  }
+
+  .updates-grid .app-category{
+    min-width:0;
+    flex:1 1 auto;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .updates-grid .app-arrow{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+
+}
