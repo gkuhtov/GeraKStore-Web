@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeraK DNS Checker • Диагностика туннеля</title>
+  <title>GeraK DNS Checker • Реальный тест туннеля</title>
   <link rel="icon" href="assets/images/gerastore-mark.svg" type="image/svg+xml" />
   <style>
     :root {
@@ -20,13 +20,7 @@
       --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body {
       background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 80%);
       color: var(--text);
@@ -37,274 +31,71 @@
       padding: 36px 16px;
     }
 
-    .container {
-      width: 100%;
-      max-width: 660px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+    .container { width: 100%; max-width: 660px; display: flex; flex-direction: column; gap: 18px; }
 
     .nav-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 22px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 22px; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 18px; backdrop-filter: blur(16px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: -0.2px;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.2s;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-    }
+    .nav-brand { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 13px; }
+    .nav-link:hover { color: var(--text); }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 30px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
-      position: relative;
-      overflow: hidden;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 30px; backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55); position: relative; overflow: hidden;
     }
-
     .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
 
     .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 99px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-weight: 700;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      margin-bottom: 16px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+      border-radius: 99px; font-size: 12px; text-transform: uppercase;
+      letter-spacing: 0.8px; font-weight: 700; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border); margin-bottom: 16px;
     }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); box-shadow: 0 0 10px var(--warning); animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--warning);
-      box-shadow: 0 0 10px var(--warning);
-      animation: pulse 1.6s infinite;
-    }
+    h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 8px; }
+    .desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
+    .progress-box { margin: 22px 0; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 16px; }
+    .progress-track { height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .progress-bar { height: 100%; width: 10%; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 0.4s ease; box-shadow: 0 0 12px var(--accent-glow); }
+    .console-line { font-family: var(--mono); font-size: 12px; color: #93c5fd; display: flex; align-items: center; gap: 6px; }
 
-    h1 {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.6px;
-      margin-bottom: 8px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
 
-    .desc {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    .tile { background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 14px; }
+    .tile-label { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
+    .tile-val { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); word-break: break-all; }
 
-    .progress-box {
-      margin: 22px 0;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 16px;
-    }
+    .verdict-box { display: none; margin-top: 20px; padding: 18px; border-radius: 14px; border: 1px solid var(--card-border); font-size: 14px; line-height: 1.5; }
+    .verdict-success { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); color: #a7f3d0; }
+    .verdict-fail { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.35); color: #fca5a5; }
 
-    .progress-track {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
+    .btn-row { display: flex; gap: 10px; margin-top: 22px; }
+    .btn { flex: 1; padding: 12px 18px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; transition: 0.2s; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary { background: var(--accent); color: #ffffff; box-shadow: 0 4px 14px var(--accent-glow); }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.06); color: var(--text); border: 1px solid var(--card-border); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .progress-bar {
-      height: 100%;
-      width: 5%;
-      background: linear-gradient(90deg, var(--accent), #60a5fa);
-      transition: width 0.4s ease;
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-
-    .console-line {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: #93c5fd;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    @media (max-width: 560px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    .tile {
-      background: rgba(0, 0, 0, 0.28);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .tile-label {
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 5px;
-    }
-
-    .tile-val {
-      font-family: var(--mono);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      word-break: break-all;
-    }
-
-    .verdict-box {
-      display: none;
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .verdict-success {
-      background: rgba(16, 185, 129, 0.12);
-      border-color: rgba(16, 185, 129, 0.35);
-      color: #a7f3d0;
-    }
-
-    .verdict-fail {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: rgba(239, 68, 68, 0.35);
-      color: #fca5a5;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      transition: 0.2s;
-      text-align: center;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #ffffff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .meme-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.25);
-      font-size: 12px;
-      cursor: pointer;
-      margin-top: 18px;
-      text-decoration: underline;
-      transition: color 0.2s;
-    }
-
-    .meme-btn:hover {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
+    footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 6px; }
   </style>
 </head>
 <body>
 
   <div class="container">
-
     <div class="nav-bar">
-      <div class="nav-brand">
-        <span>⛩️</span> GeraK DNS Inspector
-      </div>
-      <a class="nav-link" href="https://gkuhtov.github.io/GeraKStore-Web/">← На главную GeraKStore</a>
+      <div class="nav-brand"><span>⛩️</span> GeraK DNS Inspector</div>
+      <a class="nav-link" href="index.html">← На витрину</a>
     </div>
 
     <div class="card">
@@ -313,15 +104,15 @@
         <span id="badge-text">Инициализация сокетов...</span>
       </div>
 
-      <h1>Проверка маршрута Gemini & Xbox</h1>
-      <p class="desc">Диагностика системного DoH/DoT шлюза, пинга и маскировки провайдера без VPN-костылей.</p>
+      <h1>Реальный тест маршрутизации DNS</h1>
+      <p class="desc">Мы отправляем контрольный запрос на изолированный поддомен и смотрим, через какой DNS-сервер твое устройство пытается его разрешить.</p>
 
       <div class="progress-box">
         <div class="progress-track">
           <div class="progress-bar" id="bar"></div>
         </div>
         <div class="console-line">
-          <span>❯</span> <span id="log-text">Подключение к сетевому стеку...</span>
+          <span>❯</span> <span id="log-text">Генерация одноразового токена проверки...</span>
         </div>
       </div>
 
@@ -331,59 +122,34 @@
           <div class="tile-val" id="val-ip">Определяем...</div>
         </div>
         <div class="tile">
-          <div class="tile-label">📍 Локация / Регион</div>
-          <div class="tile-val" id="val-geo">Вычисляем координаты...</div>
+          <div class="tile-label">📍 Локация IP</div>
+          <div class="tile-val" id="val-geo">Запрос...</div>
         </div>
         <div class="tile">
-          <div class="tile-label">🏢 Провайдер (ISP)</div>
-          <div class="tile-val" id="val-isp">Запрос ASN...</div>
+          <div class="tile-label">🛡️ Реальный DNS-сервер</div>
+          <div class="tile-val" id="val-dns">Опрашиваем резолвер...</div>
         </div>
         <div class="tile">
-          <div class="tile-label">⚡ Handshake / Пинг</div>
-          <div class="tile-val" id="val-ping">— мс</div>
-        </div>
-        <div class="tile">
-          <div class="tile-label">🛡️ DoH Gateway</div>
-          <div class="tile-val" id="val-doh">xbox-dns.ru (DoH)</div>
-        </div>
-        <div class="tile">
-          <div class="tile-label">🎭 Статус маскировки</div>
-          <div class="tile-val" id="val-stealth">Анализ...</div>
+          <div class="tile-label">🏢 Провайдер DNS</div>
+          <div class="tile-val" id="val-dns-isp">Анализ утечки...</div>
         </div>
       </div>
 
       <div class="verdict-box" id="verdict"></div>
 
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="startCheck()">🔄 Запустить тест снова</button>
-        <a class="btn btn-secondary" href="https://github.com/gkuhtov/GeraKNetwork" target="_blank">📖 Инструкция</a>
-      </div>
-
-      <div style="text-align: center;">
-        <button class="meme-btn" onclick="triggerMeme()">Нажми, если Gemini всё еще выпендривается 🤡</button>
+        <button class="btn btn-primary" onclick="runRealTest()">🔄 Повторить тест</button>
+        <a class="btn btn-secondary" href="https://xbox-dns.ru/test" target="_blank" rel="noopener">🌐 Тест на xbox-dns.ru ↗</a>
       </div>
     </div>
 
     <footer>
-      GeraK Ecosystem • Zero-Lag Routing • 2026
+      GeraK Ecosystem • Live DNS Leak Analysis • 2026
     </footer>
-
   </div>
 
   <script>
-    const funnySuccess = [
-      "✅ Маршруты пробиты! Gemini больше не выпендривается, пинг в играх — как будто сидишь в датацентре.",
-      "🚀 Всё чётко! Трафик летит напрямую, пакеты не дропаются, РКН грустно вздыхает в углу.",
-      "🔥 Шлюз отзывается мгновенно! Никаких гигабайтных VPN-клиентов, только чистое шифрование."
-    ];
-
-    const funnyFail = [
-      "⚠️ Твой провайдер пока резолвит старый маршрут. Сделай в консоли `ipconfig /flushdns` и перезапусти браузер!",
-      "🧐 Ты всё ещё светишься стандартным DNS. Проверь, чтобы в браузере стоял кастомный URL `https://xbox-dns.ru/dns-query`.",
-      "🚨 Gemini покажет фигу при таком DNS! Проверь профиль в Safari или переключатель частного DNS на Android."
-    ];
-
-    async function startCheck() {
+    async function runRealTest() {
       const bar = document.getElementById('bar');
       const log = document.getElementById('log-text');
       const badgeText = document.getElementById('badge-text');
@@ -393,77 +159,90 @@
       verdict.style.display = 'none';
       dot.style.background = 'var(--warning)';
       dot.style.boxShadow = '0 0 10px var(--warning)';
-      badgeText.innerText = 'Сканирование сети...';
+      badgeText.innerText = 'Анализ маршрутов...';
 
-      bar.style.width = '20%';
-      log.innerText = 'Опрашиваем DNS-резолверы и геолокацию...';
-
-      const startTime = performance.now();
-      let ipData = { ip: 'Не определен', country_name: 'Локация скрыта', city: '', org: 'Провайдер скрыт' };
-
+      // 1. Узнаем базовый IP
+      bar.style.width = '25%';
+      log.innerText = 'Определяем внешний IP клиента...';
       try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (res.ok) {
-          ipData = await res.json();
-        }
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        document.getElementById('val-ip').innerText = ipData.ip;
       } catch (e) {
-        try {
-          const fallback = await fetch('https://api.ipify.org?format=json');
-          const fb = await fallback.json();
-          ipData.ip = fb.ip;
-        } catch (_) {}
+        document.getElementById('val-ip').innerText = 'Скрыт';
       }
 
-      bar.style.width = '65%';
-      log.innerText = 'Пробиваем тестовый сокет к xbox-dns.ru...';
+      // 2. Генерируем уникальный ID для реальной проверки DNS
+      const testId = Math.random().toString(36).substring(2, 12);
+      bar.style.width = '55%';
+      log.innerText = `Пингуем тестовый поддомен ${testId}.bash.ws...`;
 
-      document.getElementById('val-ip').innerText = ipData.ip || '66.249.72.x';
-      document.getElementById('val-geo').innerText = (ipData.city ? ipData.city + ', ' : '') + (ipData.country_name || 'Локация скрыта');
-      document.getElementById('val-isp').innerText = (ipData.org || 'Local ISP').substring(0, 24);
-
-      let dohActive = false;
-      const pingMs = Math.round(performance.now() - startTime);
-      document.getElementById('val-ping').innerText = `${Math.min(pingMs, 60)} мс (Zero-Lag)`;
-
+      // Браузер выполняет DNS-запрос через системный DNS пользователя
       try {
-        await fetch('https://xbox-dns.ru/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB', {
-          method: 'GET',
-          headers: { 'Accept': 'application/dns-message' },
-          mode: 'no-cors'
-        });
-        dohActive = true;
+        await fetch(`https://${testId}.bash.ws`, { mode: 'no-cors', cache: 'no-store' });
+      } catch (_) {
+        // Ошибка ожидаема — нам нужен был только резолв домена!
+      }
+
+      // 3. Опрашиваем API, кто именно зарезолвил поддомен
+      bar.style.width = '85%';
+      log.innerText = 'Считываем ответ DNS-резолвера...';
+
+      let detectedDns = [];
+      try {
+        const checkRes = await fetch(`https://bash.ws/dnsleak/test/${testId}?json`);
+        detectedDns = await checkRes.json();
       } catch (err) {
-        dohActive = false;
+        console.warn('API fallback', err);
       }
 
       bar.style.width = '100%';
       setTimeout(() => {
         verdict.style.display = 'block';
-        if (dohActive || ipData.country === 'RU' || ipData.country === 'BY') {
-          dot.style.background = 'var(--success)';
-          dot.style.boxShadow = '0 0 10px var(--success)';
-          badgeText.innerText = 'Туннель активен';
-          document.getElementById('val-stealth').innerText = '✅ DoH / Zero-Lag';
-          log.innerText = 'Диагностика завершена без ошибок';
-          verdict.className = 'verdict-box verdict-success';
-          verdict.innerHTML = funnySuccess[Math.floor(Math.random() * funnySuccess.length)];
+
+        if (detectedDns && detectedDns.length > 0) {
+          const firstDns = detectedDns[0];
+          const dnsIp = firstDns.ip || 'Неизвестно';
+          const dnsAsn = firstDns.asn || firstDns.country_name || 'Неизвестный провайдер';
+
+          document.getElementById('val-dns').innerText = dnsIp;
+          document.getElementById('val-dns-isp').innerText = dnsAsn;
+          document.getElementById('val-geo').innerText = firstDns.country_name || 'Определена';
+
+          // Проверяем: это Xbox DNS (111.88.96.x / Cloudflare / Quad9 DoH) или домашний провайдер?
+          const isXboxOrDoH = dnsIp.startsWith('111.88.') || 
+                              dnsAsn.toLowerCase().includes('cloudflare') || 
+                              dnsAsn.toLowerCase().includes('quad9') ||
+                              dnsAsn.toLowerCase().includes('google');
+
+          if (isXboxOrDoH) {
+            dot.style.background = 'var(--success)';
+            dot.style.boxShadow = '0 0 10px var(--success)';
+            badgeText.innerText = 'Шлюз активен';
+            log.innerText = 'Тест завершен: DNS перенаправлен';
+            verdict.className = 'verdict-box verdict-success';
+            verdict.innerHTML = `<b>✅ DNS перенаправлен успешно!</b><br>Запросы идут через защищенный шлюз (<b>${dnsIp}</b>). Gemini и сервисы Xbox работают в штатном режиме без VPN.`;
+          } else {
+            dot.style.background = 'var(--danger)';
+            dot.style.boxShadow = '0 0 10px var(--danger)';
+            badgeText.innerText = 'Дефолтный DNS';
+            log.innerText = 'Тест завершен: обнаружен провайдер';
+            verdict.className = 'verdict-box verdict-fail';
+            verdict.innerHTML = `<b>⚠️ Обнаружен DNS домашнего провайдера:</b> <code>${dnsIp}</code> (${dnsAsn}).<br>Шлюз <code>xbox-dns.ru</code> не перехватывает запросы. Проверь настройки DoH в браузере или профиль на iPhone!`;
+          }
         } else {
-          dot.style.background = 'var(--danger)';
-          dot.style.boxShadow = '0 0 10px var(--danger)';
-          badgeText.innerText = 'Требуется настройка';
-          document.getElementById('val-stealth').innerText = '⚠️ Открытый трафик';
-          log.innerText = 'Обнаружен дефолтный DNS';
+          // Если API заблокирован или не ответил — мягкий фолбэк
+          dot.style.background = 'var(--warning)';
+          badgeText.innerText = 'Ручная проверка';
+          document.getElementById('val-dns').innerText = 'Не удалось перехватить';
+          document.getElementById('val-dns-isp').innerText = 'Запрос отклонён';
           verdict.className = 'verdict-box verdict-fail';
-          verdict.innerHTML = funnyFail[Math.floor(Math.random() * funnyFail.length)];
+          verdict.innerHTML = 'Запрос заблокирован браузерным трекером. Нажми кнопку <b>«Тест на xbox-dns.ru»</b> для официальной проверки.';
         }
-      }, 400);
+      }, 500);
     }
 
-    function triggerMeme() {
-      alert("Совет от GeraK: Если Gemini всё равно выдаёт ошибку региона — закрой приватную вкладку, очисти куки сайта gemini.google.com и выключи бесплатные расширения-VPN, которые текут DNS-запросами! 😉");
-    }
-
-    window.addEventListener('DOMContentLoaded', startCheck);
+    window.addEventListener('DOMContentLoaded', runRealTest);
   </script>
 </body>
 </html>
